@@ -1,16 +1,16 @@
 import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
 import 'package:fluttershopping/home/model/comment_list.dart';
 import 'package:fluttershopping/home/model/goods_detail.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
-import 'package:fluttershopping/utils/LoadingPage.dart';
 import 'package:fluttershopping/utils/loading.dart';
-import 'package:fluttershopping/utils/navigator_utils.dart';
-import 'package:get/route_manager.dart';
 
 class GoodsDetailPage extends StatefulWidget {
   final String? goodsId;
@@ -26,7 +26,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   List<ListElement>? list; //评论数据
 
-  late String num = "0";
+  var num = 1;
 
   @override
   void initState() {
@@ -277,7 +277,10 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
             width: 10,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              // _showBottomSheet();
+              _showModalBottomSheet("加入购物车");
+            },
             style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(Colors.orange),
                 foregroundColor: WidgetStateProperty.all(Colors.white)),
@@ -287,7 +290,9 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
             width: 10,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              _showModalBottomSheet("立即购买");
+            },
             style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(Colors.red),
                 foregroundColor: WidgetStateProperty.all(Colors.white)),
@@ -298,6 +303,165 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showModalBottomSheet(String title) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 390,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Spacer(),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(Icons.close),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(15)),
+                    child: Image.network(
+                      detail!.goodsImage,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "¥",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          Text(
+                            detail!.goodsPriceMin,
+                            style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          // const Spacer(),
+                          const SizedBox(
+                            width: 10,
+                          )
+                        ],
+                      ),
+                      Text("库存${detail!.goodsSales}"),
+                      const SizedBox(
+                        height: 40,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Text(
+                    "数量",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      if (num > 1) {
+                        setState(() {
+                          num -= 1;
+                        });
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 30,
+                      height: 30,
+                      color: Colors.grey.withOpacity(0.5),
+                      child: const Text(
+                        "-",
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 30,
+                    color: Colors.grey.withOpacity(0.5),
+                    child: Text(num.toString()),
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        num++;
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 30,
+                      height: 30,
+                      color: Colors.grey.withOpacity(0.5),
+                      child: const Text(
+                        "+",
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(Colors.orange),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
+                    minimumSize: WidgetStateProperty.all(const Size(350, 45))),
+                child: Text(title),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 

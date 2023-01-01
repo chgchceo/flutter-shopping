@@ -44,8 +44,8 @@ class _HomePageState extends State<HomePage>
   void initData() async {
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
-      // Loading.show(context);
-      showLoadingDialog(context,"加载中");
+      Loading.show(context);
+      // showLoadingDialog(context,"加载中");
     });
 
     TestRequest request = TestRequest();

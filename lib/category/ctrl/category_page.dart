@@ -74,10 +74,10 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   void initData() async {
-    Future.delayed(const Duration(seconds: 0), () {
-      // 这里是你想要延时执行的代码
-      Loading.show(context);
-    });
+    // Future.delayed(const Duration(seconds: 0), () {
+    //   // 这里是你想要延时执行的代码
+    //   Loading.show(context);
+    // });
     CategoryRequest request = CategoryRequest();
     request.add("s", "api/category/list");
     // showLoadingDialog(context, "加载中...");
@@ -88,10 +88,10 @@ class _CategoryPageState extends State<CategoryPage> {
       setState(() {
         list = model.data.list;
         children = model.data.list[0].children;
-        Future.delayed(const Duration(seconds: 0), () {
-          // 这里是你想要延时执行的代码
-          Loading.dismiss(context);
-        });
+        // Future.delayed(const Duration(seconds: 0), () {
+        //   // 这里是你想要延时执行的代码
+        //   Loading.dismiss(context);
+        // });
       });
     } else {}
   }
