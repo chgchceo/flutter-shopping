@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttershopping/http/core/hi_net.dart';
-import 'package:fluttershopping/http/request/test_request.dart';
+import 'package:fluttershopping/cart/ctrl/cart_page.dart';
+import 'package:fluttershopping/category/ctrl/category_page.dart';
+import 'package:fluttershopping/home/ctrl/home_page.dart';
+import 'package:fluttershopping/mine/ctrl/mine_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,61 +13,54 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      home: MyHomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List pageList = [
+    const HomePage(),
+    const CategoryPage(),
+    const CartPage(),
+    const MinePage()
+  ];
 
-  void _incrementCounter() async {
-    TestRequest request = TestRequest();
-    request.add("s", "/api/page/detail");
-    var result = await HiNet.getInstance().send(request);
-    print(result);
-  }
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: pageList[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: "分类"),
+          BottomNavigationBarItem(icon: Icon(Icons.car_crash), label: "购物车"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的"),
+        ],
+        currentIndex: _currentIndex,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey,
+        unselectedFontSize: 17,
+        selectedFontSize: 17,
+        onTap: (index) => {
+          setState(() {
+            _currentIndex = index;
+          })
+        },
       ),
     );
   }
