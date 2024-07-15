@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttershopping/home/ctrl/search_history.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
 
 var screennWidth;
 
@@ -33,15 +35,17 @@ class _HomePageState extends State<HomePage> {
 
 //加载首页数据
   void initData() async {
+    // Loading.show(context);
     TestRequest request = TestRequest();
     request.add("s", "api/page/detail");
     var response = await HiNet.getInstance().send(request);
 
+// Loading.dismiss(context);
     HomeModel model = HomeModel.fromJson(jsonDecode(response.toString()));
     if (model.status == 200) {
       setState(() {
         items = model.data.pageData.items;
-
+        
         bannerData = items[1].data;
         cateData = items[3].data;
         goodsData = items[6].data;
@@ -62,7 +66,15 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SearchButton(),
+            GestureDetector(
+              child: const SearchButton(),
+              onTap: () => {
+                NavigatorUtils.pushPage(
+                    context: context,
+                    targetPage: const SearchHistoryPage(),
+                    dismissCallBack: (e) => {})
+              },
+            ),
             const SizedBox(
               height: 15,
             ),
@@ -83,7 +95,7 @@ class _HomePageState extends State<HomePage> {
 
   // ignore: non_constant_identifier_names
   Widget BannerView() {
-    if (bannerData!.isNotEmpty) {
+    if (bannerData != null && bannerData!.isNotEmpty) {
       return SizedBox(
         height: 200,
         child: BannerCarousel(
@@ -91,13 +103,13 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else {
-      return const Text("data");
+      return const Text("");
     }
   }
 }
 
 Widget goodsList(List<Datum>? data) {
-  if (data!.isEmpty) {
+  if (data == null || data.isEmpty) {
     return const Text("");
   }
 // 使用ListView.builder来构建列表

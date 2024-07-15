@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttershopping/home/ctrl/search_history.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({super.key});
@@ -53,12 +55,16 @@ class NewWidget extends StatelessWidget {
       ),
       onPressed: () {
         // 按钮点击时执行的操作
-        print('Search Button Clicked');
+
+        NavigatorUtils.pushPage(
+            context: context,
+            targetPage: const SearchHistoryPage(),
+            dismissCallBack: (e) => {});
       },
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.start, // 使内容居中
         children: [
-          Icon(Icons.search, size: 24,color: Colors.grey), // 搜索图标
+          Icon(Icons.search, size: 24, color: Colors.grey), // 搜索图标
           SizedBox(width: 10), // 图标和文字之间的间隔
           Text('请在此输入搜索关键字',
               style: TextStyle(fontSize: 16, color: Colors.grey)), // 搜索文字
@@ -78,7 +84,7 @@ Widget naviGridView(BuildContext context, List<Datum>? data) {
   }
 
   return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),  
+    physics: const NeverScrollableScrollPhysics(),
 
     // 定义网格的列数和其他属性
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -124,7 +130,7 @@ Widget naviGridView(BuildContext context, List<Datum>? data) {
 class BannerCarousel extends StatefulWidget {
   final List<Datum>? bannerData;
   const BannerCarousel({super.key, this.bannerData});
-  
+
   @override
   // ignore: library_private_types_in_public_api
   _BannerCarouselState createState() => _BannerCarouselState();
@@ -134,7 +140,6 @@ class _BannerCarouselState extends State<BannerCarousel>
     with SingleTickerProviderStateMixin {
   late final PageController _pageController;
 
-    
   Timer? _timer;
   int currentPage = 0;
   int nextPage = 1;
@@ -159,7 +164,6 @@ class _BannerCarouselState extends State<BannerCarousel>
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget>? images = widget.bannerData
         ?.map((mo) => Image.network(
               mo.imgUrl!,
@@ -177,6 +181,6 @@ class _BannerCarouselState extends State<BannerCarousel>
                 nextPage = (currentPage + 1) % images.length;
               })
             },
-        children:images!);
+        children: images!);
   }
 }
