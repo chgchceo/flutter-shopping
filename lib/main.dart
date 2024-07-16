@@ -4,6 +4,7 @@ import 'package:fluttershopping/category/ctrl/category_page.dart';
 import 'package:fluttershopping/home/ctrl/home_page.dart';
 import 'package:fluttershopping/mine/ctrl/mine_page.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -65,3 +66,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+

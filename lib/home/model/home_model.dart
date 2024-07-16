@@ -105,6 +105,8 @@ class Item {
             ? []
             : List<dynamic>.from(data!.map((x) => x.toJson())),
       };
+
+  containsKey(String s) {}
 }
 
 class Datum {

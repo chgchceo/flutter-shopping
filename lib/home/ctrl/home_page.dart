@@ -6,6 +6,7 @@ import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
+import 'package:fluttershopping/utils/LoadingPage.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
 var screennWidth;
@@ -35,22 +36,31 @@ class _HomePageState extends State<HomePage> {
 
 //加载首页数据
   void initData() async {
-    // Loading.show(context);
-    TestRequest request = TestRequest();
-    request.add("s", "api/page/detail");
-    var response = await HiNet.getInstance().send(request);
 
-// Loading.dismiss(context);
-    HomeModel model = HomeModel.fromJson(jsonDecode(response.toString()));
-    if (model.status == 200) {
-      setState(() {
-        items = model.data.pageData.items;
+showLoadingDialog(context, "加载中...");
+//     try{
+
+//  TestRequest request = TestRequest();
+//     request.add("s", "api/page/detail");
+    
+//     var response = await HiNet.getInstance().send(request);
+//     HomeModel model = HomeModel.fromJson(jsonDecode(response.toString()));
+//     if (model.status == 200) {
+//       setState(() {
+//         items = model.data.pageData.items;
         
-        bannerData = items[1].data;
-        cateData = items[3].data;
-        goodsData = items[6].data;
-      });
-    }
+//         bannerData = items[1].data;
+//         cateData = items[3].data;
+//         goodsData = items[6].data;
+//       });
+//     }
+//     } catch (e) {  
+//     // 处理错误，例如显示一个错误对话框  
+//     print("Error loading data: $e");  
+//   } finally {  
+//     hideLoadingDialog(context);  
+//   } 
+   
   }
 
 //首页界面展示

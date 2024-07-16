@@ -5,6 +5,7 @@ import 'package:fluttershopping/apis/category_request.dart';
 import 'package:fluttershopping/category/model/category_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
+import 'package:fluttershopping/utils/LoadingPage.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -74,10 +75,10 @@ class _CategoryPageState extends State<CategoryPage> {
   void initData() async {
     CategoryRequest request = CategoryRequest();
     request.add("s", "api/category/list");
-
+    showLoadingDialog(context, "加载中...");
     var res = await HiNet.getInstance().send(request);
     CategoryModel model = CategoryModel.fromJson(jsonDecode(res.toString()));
-
+    hideLoadingDialog(context);
     if (model.status == 200) {
 
      setState(() {
