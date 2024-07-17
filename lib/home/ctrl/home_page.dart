@@ -6,7 +6,7 @@ import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
-import 'package:fluttershopping/utils/LoadingPage.dart';
+import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
 var screennWidth;
@@ -18,7 +18,10 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+ 
+
   late List<Item> items; //页面整体数组
 
   List<Datum>? bannerData; //banner图片数组
@@ -31,42 +34,45 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    initData();
+    if (bannerData == null) {
+          initData();
+    }
+    
   }
 
 //加载首页数据
   void initData() async {
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.show(context);
+    });
 
-showLoadingDialog(context, "加载中...");
-//     try{
+    TestRequest request = TestRequest();
+    request.add("s", "api/page/detail");
 
-//  TestRequest request = TestRequest();
-//     request.add("s", "api/page/detail");
-    
-//     var response = await HiNet.getInstance().send(request);
-//     HomeModel model = HomeModel.fromJson(jsonDecode(response.toString()));
-//     if (model.status == 200) {
-//       setState(() {
-//         items = model.data.pageData.items;
-        
-//         bannerData = items[1].data;
-//         cateData = items[3].data;
-//         goodsData = items[6].data;
-//       });
-//     }
-//     } catch (e) {  
-//     // 处理错误，例如显示一个错误对话框  
-//     print("Error loading data: $e");  
-//   } finally {  
-//     hideLoadingDialog(context);  
-//   } 
-   
+    var response = await HiNet.getInstance().send(request);
+    HomeModel model = HomeModel.fromJson(jsonDecode(response.toString()));
+    if (model.status == 200) {
+      setState(() {
+        items = model.data.pageData.items;
+        Future.delayed(const Duration(seconds: 0), () {
+          // 这里是你想要延时执行的代码
+          Loading.dismiss(context);
+        });
+
+        bannerData = items[1].data;
+        cateData = items[3].data;
+        goodsData = items[6].data;
+      });
+    }
   }
 
 //首页界面展示
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     screennWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("智慧商城"),
@@ -116,6 +122,10 @@ showLoadingDialog(context, "加载中...");
       return const Text("");
     }
   }
+
+
+@override
+  bool get wantKeepAlive => true; // 保持页面活跃
 }
 
 Widget goodsList(List<Datum>? data) {
@@ -136,6 +146,8 @@ Widget goodsList(List<Datum>? data) {
       return goodsItem(datum);
     },
   );
+
+  
 }
 
 Widget goodsItem(Datum data) {
@@ -190,6 +202,8 @@ Widget goodsItem(Datum data) {
       )
     ],
   );
+
+   
 }
 
 // 假设有一个函数来获取默认图片

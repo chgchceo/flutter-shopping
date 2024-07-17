@@ -46,7 +46,7 @@ class NewWidget extends StatelessWidget {
     return OutlinedButton(
       style: ButtonStyle(
         // 设置边框颜色等样式
-        side: MaterialStateProperty.all(
+        side: WidgetStateProperty.all(
           const BorderSide(color: Colors.grey, width: 1.0),
         ),
         // 如果需要设置按钮的内边距，可以在这里设置

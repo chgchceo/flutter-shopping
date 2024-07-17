@@ -5,7 +5,7 @@ import 'package:fluttershopping/apis/category_request.dart';
 import 'package:fluttershopping/category/model/category_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
-import 'package:fluttershopping/utils/LoadingPage.dart';
+import 'package:fluttershopping/utils/loading.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -69,21 +69,30 @@ class _CategoryPageState extends State<CategoryPage> {
             );
           });
     }
-    return const Text("hehe");
+    return const Text("");
   }
 
   void initData() async {
+
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.show(context);
+    });
     CategoryRequest request = CategoryRequest();
     request.add("s", "api/category/list");
-    showLoadingDialog(context, "加载中...");
+    // showLoadingDialog(context, "加载中...");
     var res = await HiNet.getInstance().send(request);
     CategoryModel model = CategoryModel.fromJson(jsonDecode(res.toString()));
-    hideLoadingDialog(context);
+    // hideLoadingDialog(context);
     if (model.status == 200) {
 
      setState(() {
         list = model.data.list;
         children = model.data.list[0].children;
+        Future.delayed(const Duration(seconds: 0), () {
+          // 这里是你想要延时执行的代码
+          Loading.dismiss(context);
+        });
      });
     } else {
 
