@@ -7,7 +7,7 @@ import 'package:fluttershopping/home/model/search_list.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
-import 'package:get/route_manager.dart';
+
 
 // ignore: must_be_immutable
 class SearchGoodsPage extends StatefulWidget {
@@ -95,7 +95,6 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
         itemBuilder: (BuildContext context, int index) {
           Datum model = data![index];
           
-
           return GestureDetector(
               onTap: () {
                 NavigatorUtils.pushPage(
