@@ -1,11 +1,17 @@
 import 'dart:convert';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
+import 'package:fluttershopping/home/model/comment_list.dart';
 import 'package:fluttershopping/home/model/goods_detail.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
+import 'package:fluttershopping/utils/loading.dart';
+import 'package:get/get_state_manager/src/simple/get_widget_cache.dart';
 
 class GoodsDetailPage extends StatefulWidget {
   final String? goodsId;
@@ -18,11 +24,17 @@ class GoodsDetailPage extends StatefulWidget {
 class _GoodsDetailPageState extends State<GoodsDetailPage> {
   Detail? detail;
   List<Datum>? bannerData; //banner图片数组
+
+  List<ListElement>? list; //评论数据
+
+  late String num = "0";
+
   @override
   void initState() {
     super.initState();
 
     initData();
+    initCommentData();
   }
 
   @override
@@ -50,93 +62,302 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   Widget mainView() {
     if (detail == null || detail!.goodsName.isEmpty) {
-      return const Text("hehe");
+      return const Text("");
     } else {
       return Column(
         children: [
-
           SizedBox(
-            height: MediaQuery.of(context).size.height-80-120,
-            child: ListView(
-              children: [
-                BannerView(),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 30,
-                          child: Text(
-                            detail!.goodsName,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      children: [
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 230,
-                          child: Text(
-                            detail!.goodsPriceMin,
-                            style: const TextStyle(
-                                fontSize: 22,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Spacer(),
-                        Text("销量${detail!.goodsSales}"),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
+            height: MediaQuery.of(context).size.height - 80 - 120,
+            child: ListView(children: [
+              BannerView(),
+              const SizedBox(height: 15),
+              topPriceView(),
+              nameView(),
+              intrduceView(),
+              const SizedBox(height: 15),
+              commentTitle(),
+              commentView(),
+              Image.asset("images/img1.png")
+            ]),
           ),
-
-          
-          Container(
-            height: 50,
-            
-            decoration: const BoxDecoration(
-             color: Colors.white,
-              // border: BoxBorder.top(color:Colors.red)
-              border: Border(top:BorderSide(width: 1,color: Colors.grey))
-              
-            ),
-            child: const Row(
-
-              children: [
-                Text("data")
-              ],
-            ),
-
-          )
+          bottomView()
         ],
       );
     }
   }
 
+  Widget commentView() {
+    if (list == null || list!.isEmpty) {
+      return const Center(child: Text(""),);
+    } else {
+      return SizedBox(
+          height: 400,
+          child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: list?.length,
+            itemBuilder: (BuildContext context, int index) {
+              ListElement m = list![index];
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Image.network(
+                        m.user.avatarUrl,
+                        width: 30,
+                      ),
+                      Text(m.user.nickName),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(m.content),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Text(m.createTime.toString()),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ));
+    }
+  }
+
+  Widget commentTitle() {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 15,
+        ),
+         Text(
+          "商品评价(${list?.length ?? "0"})条",
+          style:const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+        ),
+        const Spacer(),
+        const Text(
+          "查看更多",
+          style: TextStyle(fontSize: 16),
+        ),
+        Image.asset(
+          "images/right.png",
+          width: 20,
+          color: Colors.grey,
+        ),
+        const SizedBox(
+          width: 25,
+        )
+      ],
+    );
+  }
+
+  Widget intrduceView() {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 15,
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width - 30,
+          height: 45,
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.1),
+            borderRadius: const BorderRadius.all(Radius.circular(2)),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 10,
+              ),
+              Image.asset(
+                "images/xuanzhong.png",
+                width: 20,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text(
+                "七天无理由退货",
+                style: TextStyle(fontSize: 18, color: Colors.black),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Image.asset(
+                "images/xuanzhong.png",
+                width: 20,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text(
+                "48小时发货",
+                style: TextStyle(fontSize: 18, color: Colors.black),
+              ),
+              const Spacer(),
+              Image.asset(
+                "images/right.png",
+                width: 20,
+              ),
+              const SizedBox(
+                width: 10,
+              )
+            ],
+          ),
+        ),
+        const SizedBox(
+          width: 15,
+        ),
+      ],
+    );
+  }
+
+  Widget bottomView() {
+    return Container(
+      height: 60,
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          // border: BoxBorder.top(color:Colors.red)
+          border: Border(top: BorderSide(width: 1, color: Colors.grey))),
+      child: Row(
+        children: [
+          const SizedBox(
+            width: 15,
+          ),
+          const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Icon(Icons.home, color: Colors.grey), Text("首页")],
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.shopping_cart,
+                color: Colors.grey,
+              ),
+              Text("购物车")
+            ],
+          ),
+          const Spacer(),
+          const SizedBox(
+            width: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.orange),
+                foregroundColor: WidgetStateProperty.all(Colors.white)),
+            child: const Text("加入购物车"),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.red),
+                foregroundColor: WidgetStateProperty.all(Colors.white)),
+            child: const Text("立即购买"),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget topPriceView() {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 15,
+        ),
+        SizedBox(
+          // width: MediaQuery.of(context).size.width - 330,
+          child: Text(
+            detail!.goodsPriceMin,
+            style: const TextStyle(
+                fontSize: 22, color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(
+          width: 15,
+        ),
+        Text(
+          detail!.goodsPriceMax,
+          style: const TextStyle(
+              decoration: TextDecoration.lineThrough, fontSize: 16),
+        ),
+        Spacer(),
+        Text("销量${detail!.goodsSales}"),
+        const SizedBox(
+          width: 15,
+        ),
+      ],
+    );
+  }
+
+  Widget nameView() {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            const SizedBox(
+              width: 15,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 30,
+              child: Text(
+                detail!.goodsName,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+      ],
+    );
+  }
+
   void initData() async {
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.show(context);
+    });
+
     BaseGetRequest request = BaseGetRequest();
 
     request.add("s", "api/goods/detail");
@@ -157,6 +378,28 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
       setState(() {
         detail = model.data.detail;
         bannerData = data;
+        Future.delayed(const Duration(seconds: 0), () {
+          // 这里是你想要延时执行的代码
+          Loading.dismiss(context);
+        });
+      });
+    }
+  }
+
+  void initCommentData() async {
+    BaseGetRequest request = BaseGetRequest();
+
+    request.add("s", "api/comment/listRows");
+    request.add("goodsId", widget.goodsId ?? "");
+    request.add("limit", "3");
+
+    var res = await HiNet.getInstance().send(request);
+    CommentListModel model =
+        CommentListModel.fromJson(jsonDecode(res.toString()));
+    print(res);
+    if (model.status == 200) {
+      setState(() {
+        list = model.data.list;
       });
     }
   }
