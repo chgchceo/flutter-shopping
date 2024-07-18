@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttershopping/apis/category_request.dart';
 import 'package:fluttershopping/category/model/category_model.dart';
+import 'package:fluttershopping/home/ctrl/search_goods.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/utils/loading.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -39,7 +41,7 @@ class _CategoryPageState extends State<CategoryPage> {
             Row(children: [
               SizedBox(
                 width: 120,
-                height: MediaQuery.of(context).size.height-300,
+                height: MediaQuery.of(context).size.height - 300,
                 child: leftView(),
               ),
               SizedBox(
@@ -49,8 +51,7 @@ class _CategoryPageState extends State<CategoryPage> {
               )
             ])
           ],
-        )
-        );
+        ));
   }
 
   Widget leftView() {
@@ -73,7 +74,6 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   void initData() async {
-
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
       Loading.show(context);
@@ -85,18 +85,15 @@ class _CategoryPageState extends State<CategoryPage> {
     CategoryModel model = CategoryModel.fromJson(jsonDecode(res.toString()));
     // hideLoadingDialog(context);
     if (model.status == 200) {
-
-     setState(() {
+      setState(() {
         list = model.data.list;
         children = model.data.list[0].children;
         Future.delayed(const Duration(seconds: 0), () {
           // 这里是你想要延时执行的代码
           Loading.dismiss(context);
         });
-     });
-    } else {
-
-    }
+      });
+    } else {}
   }
 
   Widget rightView() {
@@ -112,12 +109,24 @@ class _CategoryPageState extends State<CategoryPage> {
           ListElement element = children![index];
           return Column(
             children: [
-              Image.network(
-                  width: 50,
-                  height: 80,
-                  element.image!.previewUrl,
-                  fit: BoxFit.contain),
-              Text(element.name)
+              GestureDetector(
+                onTap: () {
+
+                  NavigatorUtils.pushPage(context: context, targetPage: SearchGoodsPage(categoryId: element.categoryId.toString(),), dismissCallBack: (v){});
+
+                },
+                child: Column(
+                  children: [
+                    Image.network(
+                        width: 50,
+                        height: 80,
+                        element.image!.previewUrl,
+                        fit: BoxFit.contain),
+                    Text(element.name)
+                  ],
+                ),
+              ),
+              
             ],
           );
         },

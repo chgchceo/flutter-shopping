@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttershopping/home/ctrl/goods_detail_page.dart';
 import 'package:fluttershopping/home/ctrl/search_history.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
@@ -9,7 +10,8 @@ import 'package:fluttershopping/http/request/test_request.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
-var screennWidth;
+// ignore: prefer_typing_uninitialized_variables
+var screenWidth;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,8 +22,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
- 
-
   late List<Item> items; //页面整体数组
 
   List<Datum>? bannerData; //banner图片数组
@@ -35,9 +35,8 @@ class _HomePageState extends State<HomePage>
     super.initState();
 
     if (bannerData == null) {
-          initData();
+      initData();
     }
-    
   }
 
 //加载首页数据
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    screennWidth = MediaQuery.of(context).size.width;
+    screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,8 +122,7 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-
-@override
+  @override
   bool get wantKeepAlive => true; // 保持页面活跃
 }
 
@@ -143,11 +141,17 @@ Widget goodsList(List<Datum>? data) {
 
       // 创建一个Widget来表示这个Datum对象
       // 这里只是一个简单的例子，你可以根据需要自定义
-      return goodsItem(datum);
+      return GestureDetector(
+        onTap: () {
+          NavigatorUtils.pushPage(
+              context: context,
+              targetPage: GoodsDetailPage(goodsId: datum.goodsId.toString(),),
+              dismissCallBack: (v) {});
+        },
+        child: goodsItem(datum),
+      );
     },
   );
-
-  
 }
 
 Widget goodsItem(Datum data) {
@@ -160,7 +164,7 @@ Widget goodsItem(Datum data) {
       ),
       Row(
         children: [
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
@@ -175,7 +179,7 @@ Widget goodsItem(Datum data) {
             children: [
               const SizedBox(height: 10),
               SizedBox(
-                width: screennWidth - 140,
+                width: screenWidth - 140,
                 child: Text(
                   data.goodsName!,
                   style: const TextStyle(fontSize: 16, color: Colors.black),
@@ -183,12 +187,12 @@ Widget goodsItem(Datum data) {
               ),
               const SizedBox(height: 5),
               SizedBox(
-                width: screennWidth - 140,
+                width: screenWidth - 140,
                 child: Text("销量:${data.goodsSales}"),
               ),
               const SizedBox(height: 5),
               SizedBox(
-                width: screennWidth - 140,
+                width: screenWidth - 140,
                 child: Text(data.goodsPriceMin!,
                     style: const TextStyle(
                         fontSize: 20,
@@ -202,8 +206,6 @@ Widget goodsItem(Datum data) {
       )
     ],
   );
-
-   
 }
 
 // 假设有一个函数来获取默认图片

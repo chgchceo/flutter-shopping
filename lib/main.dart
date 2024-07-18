@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List pageList = [
+  final List<Widget> pageList = [
     const HomePage(),
     const CategoryPage(),
     const CartPage(),
@@ -41,12 +41,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pageList[_currentIndex],
+      // body: pageList[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: "分类"),
-          BottomNavigationBarItem(icon: Icon(Icons.car_crash), label: "购物车"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "购物车"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的"),
         ],
         currentIndex: _currentIndex,
