@@ -3,7 +3,7 @@ import 'package:fluttershopping/cart/ctrl/cart_page.dart';
 import 'package:fluttershopping/category/ctrl/category_page.dart';
 import 'package:fluttershopping/home/ctrl/home_page.dart';
 import 'package:fluttershopping/mine/ctrl/mine_page.dart';
-
+import 'package:fluttershopping/utils/sp_utils.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
   @override
+  void initState() {
+
+    super.initState();
+
+    SPUtil.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       // body: pageList[_currentIndex],
@@ -50,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
           BottomNavigationBarItem(icon: Icon(Icons.category), label: "分类"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "购物车"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart), label: "购物车"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的"),
         ],
         currentIndex: _currentIndex,
@@ -70,4 +79,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

@@ -1,19 +1,19 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fluttershopping/mine/ctrl/login_page.dart';
 import 'package:fluttershopping/utils/loading.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});
 
   @override
-  State <MinePage> createState() =>  MinePageState();
+  State<MinePage> createState() => MinePageState();
 }
 
-class  MinePageState extends State <MinePage> {
-
+class MinePageState extends State<MinePage> {
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -61,36 +61,14 @@ class  MinePageState extends State <MinePage> {
           children: [
             Column(
               children: [
-               const SizedBox(
-                  height: 20,
+                GestureDetector(
+                  child: topView(),
+                  onTap: () {
+                    NavigatorUtils.pushPage(context: context, targetPage: const LoginPage(), dismissCallBack: (v){});
+                  },
                 ),
-                Row(
-                  children: [
-                   const SizedBox(
-                      width: 30,
-                    ),
-                    ClipOval(
-                      child: SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: Image.asset(
-                          "images/img1.png",
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const Column(
-                      children: [
-                        Text("chgch",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
-                        Text("个性签名")
-                      ],
-                    )
-                  ],
+                const SizedBox(
+                  height: 20,
                 ),
                 const SizedBox(
                   height: 15,
@@ -131,6 +109,36 @@ class  MinePageState extends State <MinePage> {
         ));
   }
 
+  Widget topView() {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 30,
+        ),
+        ClipOval(
+          child: SizedBox(
+            width: 60,
+            height: 60,
+            child: Image.asset(
+              "images/img1.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        const Column(
+          children: [
+            Text("chgch",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text("个性签名")
+          ],
+        )
+      ],
+    );
+  }
+
   Widget bottomItem() {
     return Container(
         width: MediaQuery.of(context).size.width - 30,
@@ -163,8 +171,7 @@ class  MinePageState extends State <MinePage> {
           SizedBox(
             height: 160,
             child: GridView.count(
-
-              physics: const NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 crossAxisSpacing: 3, //widget 左右间的距离
                 mainAxisSpacing: 2, //widget 上下间的距离
                 crossAxisCount: 4, //每行列数)
@@ -186,7 +193,6 @@ class  MinePageState extends State <MinePage> {
     return Container(
       width: MediaQuery.of(context).size.width - 30,
       height: 100,
-
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: Colors.white),

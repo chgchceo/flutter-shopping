@@ -7,6 +7,7 @@ import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
+import 'package:fluttershopping/utils/LoadingPage.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
@@ -34,16 +35,17 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
 
-    if (bannerData == null) {
+    // if (bannerData == null) {
       initData();
-    }
+    // }
   }
 
 //加载首页数据
   void initData() async {
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
-      Loading.show(context);
+      // Loading.show(context);
+      showLoadingDialog(context,"加载中");
     });
 
     TestRequest request = TestRequest();

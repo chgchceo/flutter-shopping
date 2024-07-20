@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:fluttershopping/home/ctrl/search_goods.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
+import 'package:fluttershopping/utils/sp_utils.dart';
 
 class SearchHistoryPage extends StatefulWidget {
   const SearchHistoryPage({super.key});
@@ -14,6 +14,23 @@ class SearchHistoryPage extends StatefulWidget {
 class _SearchHistoryPageState extends State<SearchHistoryPage> {
   // 定义一个变量来保存 TextField 的输入值
   String _myText = '';
+  List<String> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    initData();
+  }
+
+  initData() async {
+    List<String>? list = await SPUtil.getListString("searchList");
+    setState(()  {
+      if (list != null && list.isNotEmpty) {
+        data = list;
+      }
+    });
+  }
 
   // 当 TextField 的内容改变时，更新这个变量
   void _handleTextChange(String value) {
@@ -48,22 +65,46 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         ));
   }
 
+  goSearchResult() {
+    if (_myText.isNotEmpty) {
+      setState(() {
+        data.remove(_myText);
+        data.insert(0, _myText);
+      });
+    }
+    SPUtil.save("searchList", data);
+    NavigatorUtils.pushPage(
+        context: context,
+        targetPage: SearchGoodsPage(
+          keyword: _myText,
+        ),
+        dismissCallBack: (e) {});
+  }
+
   Widget bottomView() {
     return GridView.builder(
-        itemCount: 20,
+        itemCount: data.length ?? 0,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           childAspectRatio: 2,
         ),
         itemBuilder: (BuildContext context, int index) {
-          return Center(
-            child: Container(
-              width: 110,
-              height: 35,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 1),
-                  borderRadius: const BorderRadius.all(Radius.circular(17.5))),
-              child: const Center(child: Text("data")),
+          var content = data[index];
+          return GestureDetector(
+            onTap: () {
+              _myText = content;
+              goSearchResult();
+            },
+            child: Center(
+              child: Container(
+                width: 110,
+                height: 35,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(17.5))),
+                child: Center(child: Text(content)),
+              ),
             ),
           );
         });
@@ -81,7 +122,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
         GestureDetector(
           child: const Icon(Icons.clear),
           onTap: () {
-            print("clear");
+            SPUtil.save("searchList", []);
+            setState(() {
+              data = [];
+            });
           },
         ),
         const SizedBox(width: 20),
@@ -130,12 +174,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
                 color: Colors.red,
                 width: 100,
                 child: TextButton(
-                    onPressed: () => {
-                          NavigatorUtils.pushPage(
-                              context: context,
-                              targetPage:  SearchGoodsPage( keyword: _myText,),
-                              dismissCallBack: (e){})
-                        },
+                    onPressed: () => {goSearchResult()},
                     child: const Text(
                       "搜索",
                       style: TextStyle(color: Colors.white, fontSize: 19),

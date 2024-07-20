@@ -1,17 +1,16 @@
 import 'dart:convert';
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
 import 'package:fluttershopping/home/model/comment_list.dart';
 import 'package:fluttershopping/home/model/goods_detail.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
+import 'package:fluttershopping/utils/LoadingPage.dart';
 import 'package:fluttershopping/utils/loading.dart';
-import 'package:get/get_state_manager/src/simple/get_widget_cache.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
+import 'package:get/route_manager.dart';
 
 class GoodsDetailPage extends StatefulWidget {
   final String? goodsId;
@@ -88,10 +87,12 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   Widget commentView() {
     if (list == null || list!.isEmpty) {
-      return const Center(child: Text(""),);
+      return const Center(
+        child: Text(""),
+      );
     } else {
       return SizedBox(
-          height: 400,
+          height: (list?.length ?? 0) * 130.0,
           child: ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             itemCount: list?.length,
@@ -151,9 +152,9 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
         const SizedBox(
           width: 15,
         ),
-         Text(
+        Text(
           "商品评价(${list?.length ?? "0"})条",
-          style:const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
         ),
         const Spacer(),
         const Text(
@@ -245,9 +246,18 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
           const SizedBox(
             width: 15,
           ),
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Icon(Icons.home, color: Colors.grey), Text("首页")],
+          GestureDetector(
+            onTap: () {
+              //返回上一层
+              // Navigator.of(context).pop();
+              //返回最外层
+              Navigator.of(context)
+                  .popUntil((Route<dynamic> route) => route.isFirst);
+            },
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Icon(Icons.home, color: Colors.grey), Text("首页")],
+            ),
           ),
           const SizedBox(
             width: 20,
@@ -356,6 +366,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
       Loading.show(context);
+      // showLoadingDialog(context, "加载中");
     });
 
     BaseGetRequest request = BaseGetRequest();
@@ -381,6 +392,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
         Future.delayed(const Duration(seconds: 0), () {
           // 这里是你想要延时执行的代码
           Loading.dismiss(context);
+          // hideLoadingDialog(context);
         });
       });
     }
