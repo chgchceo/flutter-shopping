@@ -7,7 +7,6 @@ import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
-import 'package:fluttershopping/utils/LoadingPage.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
@@ -80,6 +79,34 @@ class _HomePageState extends State<HomePage>
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
       ),
+      // body: SingleChildScrollView(
+      //   child: Column(
+      //     children: [
+      //       GestureDetector(
+      //         child: const SearchButton(),
+      //         onTap: () => {
+      //           NavigatorUtils.pushPage(
+      //               context: context,
+      //               targetPage: const SearchHistoryPage(),
+      //               dismissCallBack: (e) => {})
+      //         },
+      //       ),
+      //       const SizedBox(
+      //         height: 15,
+      //       ),
+      //       BannerView(),
+      //       SizedBox(
+      //         height: 200,
+      //         child: naviGridView(context, cateData),
+      //       ),
+      //       SizedBox(
+      //         height: (goodsData?.length ?? 0) * 100,
+      //         child: goodsList(goodsData),
+      //       )
+      //     ],
+      //   ),
+      // ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [

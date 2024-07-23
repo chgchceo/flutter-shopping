@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
@@ -272,27 +273,62 @@ class _LoginPageState extends State<LoginPage> {
       ToastHelper.showToast("请输入短信验证码");
       return;
     }
+    loginSuccessAc();
+    return;
 
-    BasePostRequest request = BasePostRequest();
-    Map<String, Object> form = {
-      "smsCode": "246810",
-      "mobile": "18917286702",
-      "isParty": false,
-      "partyData": {}
+    // BasePostRequest request = BasePostRequest();
+    // Map<String, Object> form = {
+    //   "smsCode": "246810",
+    //   "mobile": "18917286702",
+    //   "isParty": false,
+    //   "partyData": {}
+    // };
+
+    // request.add("s", "/api/passport/login");
+    // request.add("form", jsonEncode(form));
+
+    // print(form);
+    // var res = await HiNet.getInstance().send(request);
+    // print(res);
+    // BaseModel model1 = BaseModel.fromJson(jsonDecode(res.toString()));
+    // ToastHelper.showToast(model1.message);
+    // if (model1.status == 200) {
+    //   LoginModel model = LoginModel.fromJson(jsonDecode(res.toString()));
+    //   SPUtil.save("token", model.data?.token);
+    //   SPUtil.save("userId", model.data?.userId);
+    // }
+  }
+
+  void loginSuccessAc() async {
+    var headers = {
+      'platform': 'H5',
+      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
+      'Content-Type': 'application/json'
     };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'http://smart-shop.itheima.net/index.php?s=/api/passport/login'));
+    request.body = json.encode({
+      "form": {
+        "smsCode": "246810",
+        "mobile": "18917286702",
+        "isParty": false,
+        "partyData": {}
+      }
+    });
+    request.headers.addAll(headers);
 
-    request.add("s", "/api/passport/login");
-    request.add("form",jsonEncode(form));
+    http.StreamedResponse response = await request.send();
 
-    print(form);
-    var res = await HiNet.getInstance().send(request);
-    print(res);
-    BaseModel model1 = BaseModel.fromJson(jsonDecode(res.toString()));
+    BaseModel model1 = BaseModel.fromJson(jsonDecode(response.toString()));
     ToastHelper.showToast(model1.message);
     if (model1.status == 200) {
-      LoginModel model = LoginModel.fromJson(jsonDecode(res.toString()));
+      LoginModel model = LoginModel.fromJson(jsonDecode(response.toString()));
       SPUtil.save("token", model.data?.token);
       SPUtil.save("userId", model.data?.userId);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttershopping/mine/ctrl/login_page.dart';
+import 'package:fluttershopping/mine/ctrl/order_list.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
@@ -64,7 +65,10 @@ class MinePageState extends State<MinePage> {
                 GestureDetector(
                   child: topView(),
                   onTap: () {
-                    NavigatorUtils.pushPage(context: context, targetPage: const LoginPage(), dismissCallBack: (v){});
+                    NavigatorUtils.pushPage(
+                        context: context,
+                        targetPage: const LoginPage(),
+                        dismissCallBack: (v) {});
                   },
                 ),
                 const SizedBox(
@@ -198,7 +202,15 @@ class MinePageState extends State<MinePage> {
           color: Colors.white),
       child: Row(
         children: [
-          imgItem(Icons.all_inbox, "全部订单"),
+          GestureDetector(
+            onTap: () {
+              NavigatorUtils.pushPage(
+                  context: context,
+                  targetPage:const OrderListPage(),
+                  dismissCallBack: (v) {});
+            },
+            child: imgItem(Icons.all_inbox, "全部订单"),
+          ),
           imgItem(Icons.card_travel, "待支付"),
           imgItem(Icons.snapchat_outlined, "待发货"),
           imgItem(Icons.card_travel_sharp, "待收货"),
