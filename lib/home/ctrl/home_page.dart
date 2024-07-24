@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
 
     // if (bannerData == null) {
-      initData();
+    initData();
     // }
   }
 
@@ -63,6 +63,7 @@ class _HomePageState extends State<HomePage>
         bannerData = items[1].data;
         cateData = items[3].data;
         goodsData = items[6].data;
+        print(goodsData);
       });
     }
   }
@@ -107,33 +108,37 @@ class _HomePageState extends State<HomePage>
       //   ),
       // ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              child: const SearchButton(),
-              onTap: () => {
-                NavigatorUtils.pushPage(
-                    context: context,
-                    targetPage: const SearchHistoryPage(),
-                    dismissCallBack: (e) => {})
-              },
+      body: RefreshIndicator(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                GestureDetector(
+                  child: const SearchButton(),
+                  onTap: () => {
+                    NavigatorUtils.pushPage(
+                        context: context,
+                        targetPage: const SearchHistoryPage(),
+                        dismissCallBack: (e) => {})
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                BannerView(),
+                SizedBox(
+                  height: 200,
+                  child: naviGridView(context, cateData),
+                ),
+                SizedBox(
+                  height: (goodsData?.length ?? 0) * 150,
+                  child: goodsList(goodsData),
+                )
+              ],
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            BannerView(),
-            SizedBox(
-              height: 200,
-              child: naviGridView(context, cateData),
-            ),
-            SizedBox(
-              height: (goodsData?.length ?? 0) * 100,
-              child: goodsList(goodsData),
-            )
-          ],
-        ),
-      ),
+          ),
+          onRefresh: () async {
+            initData();
+          }),
     );
   }
 
@@ -159,6 +164,7 @@ Widget goodsList(List<Datum>? data) {
   if (data == null || data.isEmpty) {
     return const Text("");
   }
+  print(data.length);
 // 使用ListView.builder来构建列表
   return ListView.builder(
     physics: const NeverScrollableScrollPhysics(),
@@ -174,7 +180,9 @@ Widget goodsList(List<Datum>? data) {
         onTap: () {
           NavigatorUtils.pushPage(
               context: context,
-              targetPage: GoodsDetailPage(goodsId: datum.goodsId.toString(),),
+              targetPage: GoodsDetailPage(
+                goodsId: datum.goodsId.toString(),
+              ),
               dismissCallBack: (v) {});
         },
         child: goodsItem(datum),

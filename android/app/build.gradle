@@ -1,3 +1,9 @@
+
+def keystorePropertiesFile = rootProject.file("key.properties")  
+def keystoreProperties = new Properties()  
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -42,6 +48,14 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
+    signingConfigs {  
+        release {  
+            keyAlias keystoreProperties['keyAlias']  
+            keyPassword keystoreProperties['keyPassword']  
+            storeFile file(keystoreProperties['storeFile'])  
+            storePassword keystoreProperties['storePassword']  
+        }  
+    }  
 
     buildTypes {
         release {

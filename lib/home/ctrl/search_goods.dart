@@ -8,11 +8,11 @@ import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
-
 // ignore: must_be_immutable
 class SearchGoodsPage extends StatefulWidget {
   final String? keyword;
   final String? categoryId;
+
   const SearchGoodsPage({super.key, this.keyword, this.categoryId});
 
   @override
@@ -20,6 +20,8 @@ class SearchGoodsPage extends StatefulWidget {
 }
 
 class _SearchGoodsPageState extends State<SearchGoodsPage> {
+  final ScrollController _scrollController = ScrollController();
+  var index = 1;
   List<Datum>? data;
   var sortType = "all";
   @override
@@ -27,9 +29,20 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
     super.initState();
     initData();
     print(widget.keyword);
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        index++;
+        initData();
+      }
+    });
   }
 
   initData() async {
+    setState(() {
+      data = [];
+    });
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
       Loading.show(context);
@@ -37,6 +50,7 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
     BaseGetRequest request = BaseGetRequest();
     request.add("s", "api/goods/list");
     request.add("sortType", sortType);
+    request.add("page", index);
     request.add("goodsName", widget.keyword ?? "");
     request.add("categoryId", widget.categoryId ?? "");
 
@@ -90,72 +104,77 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
         child: Text("暂无数据"),
       );
     }
-    return ListView.builder(
-        itemCount: data?.length,
-        itemBuilder: (BuildContext context, int index) {
-          Datum model = data![index];
-          
-          return GestureDetector(
-              onTap: () {
-                NavigatorUtils.pushPage(
-                    context: context,
-                    targetPage: GoodsDetailPage(
-                      goodsId: model.goodsId.toString(),
-                    ),
-                    dismissCallBack: (v) {});
+    return RefreshIndicator(
+        child: ListView.builder(
+            controller: _scrollController,
+            itemCount: data?.length,
+            itemBuilder: (BuildContext context, int index) {
+              Datum model = data![index];
 
-              },
-              child: Column(children: [
-                Divider(
-                  color: Colors.grey.withOpacity(0.1),
-                  height: 1,
-                ),
-                Row(children: [
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Image.network(model.goodsImage),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 15,
+              return GestureDetector(
+                  onTap: () {
+                    NavigatorUtils.pushPage(
+                        context: context,
+                        targetPage: GoodsDetailPage(
+                          goodsId: model.goodsId.toString(),
                         ),
-                        Text(
-                          model.goodsName,
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("销量${model.goodsSales}"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          model.goodsPriceMin,
-                          style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                      ],
+                        dismissCallBack: (v) {});
+                  },
+                  child: Column(children: [
+                    Divider(
+                      color: Colors.grey.withOpacity(0.1),
+                      height: 1,
                     ),
-                  )
-                ])
-              ]));
+                    Row(children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Image.network(model.goodsImage),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 150,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              model.goodsName,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text("销量${model.goodsSales}"),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              model.goodsPriceMin,
+                              style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                      )
+                    ])
+                  ]));
+            }),
+        onRefresh: () async {
+          index = 1;
+          initData();
         });
   }
 

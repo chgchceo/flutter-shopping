@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttershopping/mine/ctrl/login_page.dart';
 import 'package:fluttershopping/mine/ctrl/order_list.dart';
 import 'package:fluttershopping/utils/loading.dart';
@@ -58,7 +57,16 @@ class MinePageState extends State<MinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey.withOpacity(0.1),
-        body: ListView(
+        body: RefreshIndicator(
+
+          onRefresh: () async{
+              // 模拟网络请求  
+                await Future.delayed(Duration(seconds: 2));  
+                // 这里可以添加数据更新的代码  
+                // 注意：在真实应用中，你可能需要在这里调用一个方法来更新你的数据源  
+                print('数据已刷新'); 
+          },
+          child:ListView(
           children: [
             Column(
               children: [
@@ -110,6 +118,10 @@ class MinePageState extends State<MinePage> {
               ],
             ),
           ],
+        )
+
+
+
         ));
   }
 
