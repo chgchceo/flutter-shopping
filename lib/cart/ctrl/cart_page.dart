@@ -21,6 +21,7 @@ class _CartPageState extends State<CartPage> {
         title: const Text("购物车"),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: mainView(),
     );

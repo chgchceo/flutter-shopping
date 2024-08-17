@@ -46,6 +46,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
           title: const Text("商品搜索"),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
+          centerTitle: true,
         ),
         body: Container(
           color: Colors.white,
@@ -57,8 +58,11 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
               midView(),
               const SizedBox(height: 25),
               SizedBox(
-                height: 560,
-                child: bottomView(),
+                height: MediaQuery.of(context).size.height-kBottomNavigationBarHeight-220,
+                child: Container(
+                  // color: Colors.red,
+                  child: bottomView(),
+                ),
               )
             ],
           ),

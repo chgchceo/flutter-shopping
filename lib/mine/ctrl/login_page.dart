@@ -62,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("登录"),
+        centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: mainView(),

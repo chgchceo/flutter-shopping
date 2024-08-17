@@ -66,10 +66,22 @@ class MinePageState extends State<MinePage> {
                 // 注意：在真实应用中，你可能需要在这里调用一个方法来更新你的数据源  
                 print('数据已刷新'); 
           },
-          child:ListView(
+          child:Column(
+
+            children: [
+
+              const SizedBox(height: 30,),
+
+              SizedBox(
+
+                height: MediaQuery.of(context).size.height-kBottomNavigationBarHeight-35-5-MediaQuery.of(context).padding.bottom,
+                child: ListView(
           children: [
             Column(
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
                 GestureDetector(
                   child: topView(),
                   onTap: () {
@@ -107,19 +119,28 @@ class MinePageState extends State<MinePage> {
                     backgroundColor:
                         WidgetStateProperty.all<Color>(Colors.white), // 设置按钮颜色
                     minimumSize: WidgetStateProperty.all<Size>(
-                        const Size(350, 50)), // 设置按钮最小大小
+                         Size(MediaQuery.of(context).size.width-30 ,50)), // 设置按钮最小大小
                     maximumSize: WidgetStateProperty.all<Size>(
-                        const Size(360, 60)), // 设置按钮最大大小
+                        const Size(400, 60)), // 设置按钮最大大小
                     foregroundColor:
                         WidgetStateProperty.all<Color>(Colors.black),
                   ),
                   child: const Text("退出登录"),
-                )
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
               ],
             ),
           ],
         )
-
+,
+              )
+              
+            ],
+          )
+          
+          
 
 
         ));
@@ -191,6 +212,7 @@ class MinePageState extends State<MinePage> {
                 crossAxisSpacing: 3, //widget 左右间的距离
                 mainAxisSpacing: 2, //widget 上下间的距离
                 crossAxisCount: 4, //每行列数)
+                childAspectRatio: 1.1,
                 children: [
                   imgItem(Icons.all_inbox, "全部订单"),
                   imgItem(Icons.card_travel, "待支付"),
@@ -214,15 +236,8 @@ class MinePageState extends State<MinePage> {
           color: Colors.white),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () {
-              NavigatorUtils.pushPage(
-                  context: context,
-                  targetPage:const OrderListPage(),
-                  dismissCallBack: (v) {});
-            },
-            child: imgItem(Icons.all_inbox, "全部订单"),
-          ),
+          
+          imgItem(Icons.all_inbox, "全部订单"),
           imgItem(Icons.card_travel, "待支付"),
           imgItem(Icons.snapchat_outlined, "待发货"),
           imgItem(Icons.card_travel_sharp, "待收货"),
@@ -257,6 +272,7 @@ class MinePageState extends State<MinePage> {
       height: 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        
         children: [
           Text(
             v,
@@ -273,7 +289,14 @@ class MinePageState extends State<MinePage> {
     return SizedBox(
       width: (MediaQuery.of(context).size.width - 30) / 5.0,
       height: 60,
-      child: Column(
+      child: GestureDetector(
+        onTap: () {
+              NavigatorUtils.pushPage(
+                  context: context,
+                  targetPage:const OrderListPage(),
+                  dismissCallBack: (v) {});
+            },
+        child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(v),
@@ -282,6 +305,7 @@ class MinePageState extends State<MinePage> {
           ),
           Text(name)
         ],
+      ),
       ),
     );
   }

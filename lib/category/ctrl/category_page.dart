@@ -6,7 +6,6 @@ import 'package:fluttershopping/category/model/category_model.dart';
 import 'package:fluttershopping/home/ctrl/search_goods.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
-import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -33,6 +32,7 @@ class _CategoryPageState extends State<CategoryPage> {
           title: const Text("分类"),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
+          centerTitle: true,
         ),
         body: Column(
           children: [

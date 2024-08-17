@@ -72,7 +72,7 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("商品列表")),
+      appBar: AppBar(title: const Text("商品列表"),centerTitle: true,),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -89,7 +89,7 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
               height: 10,
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height - 320,
+              height: MediaQuery.of(context).size.height - kToolbarHeight-140-MediaQuery.of(context).padding.top,
               child: goodsList(),
             )
           ],

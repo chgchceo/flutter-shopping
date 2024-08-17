@@ -50,14 +50,6 @@ class _OrderListPageState extends State<OrderListPage> {
                 height: 500,
                 child: Text("data"),
               ),
-              SizedBox(
-                height: 900,
-                width: 500,
-                child: Container(
-                  color: Colors.red,
-                  child: Text("data"),
-                ),
-              ),
             ],
           ),
           // ],

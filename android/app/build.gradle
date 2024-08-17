@@ -1,8 +1,4 @@
 
-def keystorePropertiesFile = rootProject.file("key.properties")  
-def keystoreProperties = new Properties()  
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 
 plugins {
     id "com.android.application"
@@ -28,6 +24,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
 android {
     namespace "com.example.fluttershopping"
     compileSdkVersion flutter.compileSdkVersion
@@ -48,14 +50,14 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-    signingConfigs {  
-        release {  
-            keyAlias keystoreProperties['keyAlias']  
-            keyPassword keystoreProperties['keyPassword']  
-            storeFile file(keystoreProperties['storeFile'])  
-            storePassword keystoreProperties['storePassword']  
-        }  
-    }  
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
 
     buildTypes {
         release {

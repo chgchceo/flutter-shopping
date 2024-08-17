@@ -34,9 +34,15 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    print(MediaQuery.of(context).padding.top);
+    print(MediaQuery.of(context).padding.bottom);
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("商品详情"),
+          centerTitle: true,
         ),
         body: mainView());
   }
@@ -62,7 +68,8 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
       return Column(
         children: [
           SizedBox(
-            height: MediaQuery.of(context).size.height - 80 - 120,
+            // height: MediaQuery.of(context).size.height - 80 - 120,
+            height: MediaQuery.of(context).size.height - kToolbarHeight -60 - MediaQuery.of(context).padding.top-MediaQuery.of(context).padding.bottom,
             child: ListView(children: [
               BannerView(),
               const SizedBox(height: 15),

@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage>
         title: const Text("智慧商城"),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
+        centerTitle: true,
       ),
       // body: SingleChildScrollView(
       //   child: Column(
