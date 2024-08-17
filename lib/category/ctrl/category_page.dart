@@ -18,6 +18,7 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   List<ListElement>? list;
   List<ListElement>? children;
+  var _selIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -27,6 +28,14 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height -
+        65 -
+        25 -
+        kBottomNavigationBarHeight -
+        kToolbarHeight -
+        MediaQuery.of(context).padding.bottom -
+        MediaQuery.of(context).padding.top;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text("分类"),
@@ -34,24 +43,26 @@ class _CategoryPageState extends State<CategoryPage> {
           foregroundColor: Colors.black,
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            const SearchButton(),
-            const SizedBox(height: 15),
-            Row(children: [
-              SizedBox(
-                width: 120,
-                height: MediaQuery.of(context).size.height - 300,
-                child: leftView(),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 120,
-                height: MediaQuery.of(context).size.height - 300,
-                child: rightView(),
-              )
-            ])
-          ],
-        ));
+        body: Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                const SearchButton(),
+                const SizedBox(height: 15),
+                Row(children: [
+                  SizedBox(
+                    width: 120,
+                    height: height,
+                    child: leftView(),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 120,
+                    height: height,
+                    child: rightView(),
+                  )
+                ])
+              ],
+            )));
   }
 
   Widget leftView() {
@@ -60,13 +71,21 @@ class _CategoryPageState extends State<CategoryPage> {
           itemCount: list?.length,
           itemBuilder: (context, index) {
             ListElement el = list![index];
-            return ListTile(
-              title: Text(el.name),
-              onTap: () => {
-                setState(() {
-                  children = list?[index].children;
-                })
-              },
+            return Container(
+              color: index == _selIndex
+                  ? Colors.grey.withOpacity(0.1)
+                  : Colors.white,
+              child: ListTile(
+                title: Text(
+                  el.name,
+                ),
+                onTap: () => {
+                  setState(() {
+                    _selIndex = index;
+                    children = list?[index].children;
+                  })
+                },
+              ),
             );
           });
     }
@@ -111,9 +130,12 @@ class _CategoryPageState extends State<CategoryPage> {
             children: [
               GestureDetector(
                 onTap: () {
-
-                  NavigatorUtils.pushPage(context: context, targetPage: SearchGoodsPage(categoryId: element.categoryId.toString(),), dismissCallBack: (v){});
-
+                  NavigatorUtils.pushPage(
+                      context: context,
+                      targetPage: SearchGoodsPage(
+                        categoryId: element.categoryId.toString(),
+                      ),
+                      dismissCallBack: (v) {});
                 },
                 child: Column(
                   children: [
@@ -126,7 +148,6 @@ class _CategoryPageState extends State<CategoryPage> {
                   ],
                 ),
               ),
-              
             ],
           );
         },

@@ -24,6 +24,7 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
   var index = 1;
   List<Datum>? data;
   var sortType = "all";
+  var hasMore = true;
   @override
   void initState() {
     super.initState();
@@ -31,8 +32,16 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
     print(widget.keyword);
 
     _scrollController.addListener(() {
+      print("1111111111111111object");
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
+
+            print("222222222222object");
+
+            if(hasMore == false){
+
+              return;
+            }
         index++;
         initData();
       }
@@ -41,7 +50,12 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
 
   initData() async {
     setState(() {
-      data = [];
+      if(index == 1){
+
+        hasMore = true;
+        data = [];
+      }
+      
     });
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
@@ -60,7 +74,18 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
 
     if (model.status == 200) {
       setState(() {
-        data = model.data.list.data;
+        if(index == 1){
+          data = model.data.list.data;
+          }else{
+            data = data! + model.data.list.data;
+          }
+
+          if(model.data.list.data.length < 15){
+
+            hasMore = false;
+          }else{
+            hasMore = true;
+          }
         Future.delayed(const Duration(seconds: 0), () {
           // 这里是你想要延时执行的代码
           Loading.dismiss(context);
@@ -107,8 +132,43 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
     return RefreshIndicator(
         child: ListView.builder(
             controller: _scrollController,
-            itemCount: data?.length,
+            itemCount: data!.length+1,
             itemBuilder: (BuildContext context, int index) {
+
+
+              if(index == data!.length){
+
+                 if(hasMore){
+
+                  return const  Center(
+
+                 child: Text("加载更多"),
+
+                );
+
+                  }else{
+               return const Center(
+                 child:Column(
+
+                  children: [
+
+                    
+                    Divider(height: 1,color: Color.fromRGBO(0, 0, 0, 0.1),),
+                    SizedBox(height: 20,),
+                     Text("数据加载完成"),
+                     SizedBox(
+                      height: 20,
+                     )
+                  ],
+                 ),
+
+                );
+                    
+                  }
+                
+              }
+
+
               Datum model = data![index];
 
               return GestureDetector(
@@ -185,29 +245,33 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
           const Spacer(),
           TextButton(
               onPressed: () {
+                index = 1;
                 sortType = "all";
                 initData();
               },
-              child: const Text(
+              child:  Text(
                 "综合",
-                style: TextStyle(fontSize: 18, color: Colors.black),
+                style: TextStyle(fontSize: 18, color: (sortType == "all")? Colors.black : Colors.grey),
               )),
           const Spacer(),
           TextButton(
               onPressed: () {
+
+                index = 1;
                 sortType = "sales";
                 initData();
               },
-              child: const Text("销量",
-                  style: TextStyle(fontSize: 18, color: Colors.black))),
+              child:  Text("销量",
+                  style: TextStyle(fontSize: 18, color: (sortType == "sales")? Colors.black : Colors.grey),)),
           const Spacer(),
           TextButton(
               onPressed: () {
+                index = 1;
                 sortType = "price";
                 initData();
               },
-              child: const Text("价格",
-                  style: TextStyle(fontSize: 18, color: Colors.black))),
+              child:  Text("价格",
+                  style: TextStyle(fontSize: 18, color:(sortType == "price")? Colors.black : Colors.grey))),
           const Spacer(),
         ],
       ),

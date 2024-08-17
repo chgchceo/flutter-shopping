@@ -1,7 +1,6 @@
 import 'package:fluttershopping/http/core/dio_adapter.dart';
 import 'package:fluttershopping/http/core/hi_error.dart';
 import 'package:fluttershopping/http/core/hi_net_adapter.dart';
-import 'package:fluttershopping/http/core/mock_adapter.dart';
 import 'package:fluttershopping/http/request/base_request.dart';
 
 class HiNet {

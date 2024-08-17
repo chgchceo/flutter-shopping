@@ -58,92 +58,87 @@ class MinePageState extends State<MinePage> {
     return Scaffold(
         backgroundColor: Colors.grey.withOpacity(0.1),
         body: RefreshIndicator(
-
-          onRefresh: () async{
-              // 模拟网络请求  
-                await Future.delayed(Duration(seconds: 2));  
-                // 这里可以添加数据更新的代码  
-                // 注意：在真实应用中，你可能需要在这里调用一个方法来更新你的数据源  
-                print('数据已刷新'); 
-          },
-          child:Column(
-
-            children: [
-
-              const SizedBox(height: 30,),
-
-              SizedBox(
-
-                height: MediaQuery.of(context).size.height-kBottomNavigationBarHeight-35-5-MediaQuery.of(context).padding.bottom,
-                child: ListView(
-          children: [
-            Column(
+            onRefresh: () async {
+              // 模拟网络请求
+              await Future.delayed(Duration(seconds: 2));
+              // 这里可以添加数据更新的代码
+              // 注意：在真实应用中，你可能需要在这里调用一个方法来更新你的数据源
+              print('数据已刷新');
+            },
+            child: Column(
               children: [
                 const SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
-                GestureDetector(
-                  child: topView(),
-                  onTap: () {
-                    NavigatorUtils.pushPage(
-                        context: context,
-                        targetPage: const LoginPage(),
-                        dismissCallBack: (v) {});
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                topItem(),
-                const SizedBox(
-                  height: 10,
-                ),
-                midItem(),
-                const SizedBox(
-                  height: 10,
-                ),
-                bottomItem(),
-                const SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () => {
-                    // Loading.show(context)
-                    // ToastHelper.showToast("确定要退出登录吗")
-                    _showTemperatureTip()
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.white), // 设置按钮颜色
-                    minimumSize: WidgetStateProperty.all<Size>(
-                         Size(MediaQuery.of(context).size.width-30 ,50)), // 设置按钮最小大小
-                    maximumSize: WidgetStateProperty.all<Size>(
-                        const Size(400, 60)), // 设置按钮最大大小
-                    foregroundColor:
-                        WidgetStateProperty.all<Color>(Colors.black),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height -
+                      kBottomNavigationBarHeight -
+                      35 -
+                      5 -
+                      MediaQuery.of(context).padding.bottom,
+                  child: ListView(
+                    children: [
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            child: topView(),
+                            onTap: () {
+                              NavigatorUtils.pushPage(
+                                  context: context,
+                                  targetPage: const LoginPage(),
+                                  dismissCallBack: (v) {});
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          topItem(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          midItem(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          bottomItem(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: () => {
+                              // Loading.show(context)
+                              // ToastHelper.showToast("确定要退出登录吗")
+                              _showTemperatureTip()
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all<Color>(
+                                  Colors.white), // 设置按钮颜色
+                              minimumSize: WidgetStateProperty.all<Size>(Size(
+                                  MediaQuery.of(context).size.width - 30,
+                                  50)), // 设置按钮最小大小
+                              maximumSize: WidgetStateProperty.all<Size>(
+                                  const Size(400, 60)), // 设置按钮最大大小
+                              foregroundColor:
+                                  WidgetStateProperty.all<Color>(Colors.black),
+                            ),
+                            child: const Text("退出登录"),
+                          ),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  child: const Text("退出登录"),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
+                )
               ],
-            ),
-          ],
-        )
-,
-              )
-              
-            ],
-          )
-          
-          
-
-
-        ));
+            )));
   }
 
   Widget topView() {
@@ -236,7 +231,6 @@ class MinePageState extends State<MinePage> {
           color: Colors.white),
       child: Row(
         children: [
-          
           imgItem(Icons.all_inbox, "全部订单"),
           imgItem(Icons.card_travel, "待支付"),
           imgItem(Icons.snapchat_outlined, "待发货"),
@@ -272,7 +266,6 @@ class MinePageState extends State<MinePage> {
       height: 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        
         children: [
           Text(
             v,
@@ -291,21 +284,21 @@ class MinePageState extends State<MinePage> {
       height: 60,
       child: GestureDetector(
         onTap: () {
-              NavigatorUtils.pushPage(
-                  context: context,
-                  targetPage:const OrderListPage(),
-                  dismissCallBack: (v) {});
-            },
+          NavigatorUtils.pushPage(
+              context: context,
+              targetPage: const OrderListPage(),
+              dismissCallBack: (v) {});
+        },
         child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(v),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(name)
-        ],
-      ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(v),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(name)
+          ],
+        ),
       ),
     );
   }
