@@ -155,7 +155,7 @@ class _CategoryPageState extends State<CategoryPage> {
       );
     } else {
       return const Center(
-        child: Text("暂无内容"),
+        child: Text(""),
       );
     }
   }

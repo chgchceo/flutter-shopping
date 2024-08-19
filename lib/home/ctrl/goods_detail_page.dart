@@ -129,7 +129,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                               height: 30,
                             )
                           : Image.asset(
-                              "./././images/default.jpeg",
+                              "images/default.jpeg",
                               width: 30,
                               height: 30,
                             ), //const Text(""),
@@ -616,21 +616,10 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
       "goodsSkuId": detail!.skuList[0].goodsSkuId.toString()
     };
 
-    Future.delayed(const Duration(seconds: 0), () {
-      // 这里是你想要延时执行的代码
-      Loading.show(context);
-      // showLoadingDialog(context, "加载中");
-    });
-
-    var res = await HttpService.post("cart/add", params);
+    var res = await HttpService.post("cart/add", params, context);
     print(res);
     BaseModel model = BaseModel.fromJson(jsonDecode(res.toString()));
     ToastHelper.showToast(model.message);
     Navigator.pop(context);
-    Future.delayed(const Duration(seconds: 0), () {
-      // 这里是你想要延时执行的代码
-      Loading.dismiss(context);
-      // hideLoadingDialog(context);
-    });
   }
 }

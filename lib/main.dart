@@ -67,11 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: pageList[_currentIndex],
-      body: IndexedStack(
-        index: _currentIndex,
-        children: pageList,
-      ),
+      body: pageList[_currentIndex],
+      // body: IndexedStack(
+      //   index: _currentIndex,
+      //   children: pageList,
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
