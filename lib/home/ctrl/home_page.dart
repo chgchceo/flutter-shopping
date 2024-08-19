@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin<HomePage> {
   late List<Item> items; //页面整体数组
 
   List<Datum>? bannerData; //banner图片数组
@@ -160,6 +160,9 @@ class _HomePageState extends State<HomePage>
   @override
   bool get wantKeepAlive => true; // 保持页面活跃
 }
+
+@override
+bool get wantKeepAlive => true; // 保持页面活跃
 
 Widget goodsList(List<Datum>? data) {
   if (data == null || data.isEmpty) {

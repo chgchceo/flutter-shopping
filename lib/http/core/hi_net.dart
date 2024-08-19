@@ -54,16 +54,9 @@ class HiNet {
     //使用dio来发送请求
     DioAdapter adapter = DioAdapter();
     return adapter.send(request);
-
-    // printLog("method:${request.httpMethod()}");
-    // request.addHeader("token", "123");
-    // printLog("header:${request.header}");
-    //
-    // return Future.value({"statusCode":200,"data":{"code":1,"message":"success"}});
   }
 
   void printLog(log) {
-
     print("hi_net:${log.toString()}");
   }
 }

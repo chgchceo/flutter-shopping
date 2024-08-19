@@ -25,7 +25,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
 
   initData() async {
     List<String>? list = await SPUtil.getListString("searchList");
-    setState(()  {
+    setState(() {
       if (list != null && list.isNotEmpty) {
         data = list;
       }
@@ -58,7 +58,9 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
               midView(),
               const SizedBox(height: 25),
               SizedBox(
-                height: MediaQuery.of(context).size.height-kBottomNavigationBarHeight-220,
+                height: MediaQuery.of(context).size.height -
+                    kBottomNavigationBarHeight -
+                    220,
                 child: Container(
                   // color: Colors.red,
                   child: bottomView(),

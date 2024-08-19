@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
 import 'package:fluttershopping/home/ctrl/goods_detail_page.dart';
@@ -35,13 +34,11 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
       print("1111111111111111object");
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
+        print("222222222222object");
 
-            print("222222222222object");
-
-            if(hasMore == false){
-
-              return;
-            }
+        if (hasMore == false) {
+          return;
+        }
         index++;
         initData();
       }
@@ -50,12 +47,10 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
 
   initData() async {
     setState(() {
-      if(index == 1){
-
+      if (index == 1) {
         hasMore = true;
         data = [];
       }
-      
     });
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
@@ -74,18 +69,17 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
 
     if (model.status == 200) {
       setState(() {
-        if(index == 1){
+        if (index == 1) {
           data = model.data.list.data;
-          }else{
-            data = data! + model.data.list.data;
-          }
+        } else {
+          data = data! + model.data.list.data;
+        }
 
-          if(model.data.list.data.length < 15){
-
-            hasMore = false;
-          }else{
-            hasMore = true;
-          }
+        if (model.data.list.data.length < 15) {
+          hasMore = false;
+        } else {
+          hasMore = true;
+        }
         Future.delayed(const Duration(seconds: 0), () {
           // 这里是你想要延时执行的代码
           Loading.dismiss(context);
@@ -97,7 +91,10 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("商品列表"),centerTitle: true,),
+      appBar: AppBar(
+        title: const Text("商品列表"),
+        centerTitle: true,
+      ),
       body: Container(
         color: Colors.white,
         child: Column(
@@ -114,7 +111,10 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
               height: 10,
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height - kToolbarHeight-140-MediaQuery.of(context).padding.top,
+              height: MediaQuery.of(context).size.height -
+                  kToolbarHeight -
+                  140 -
+                  MediaQuery.of(context).padding.top,
               child: goodsList(),
             )
           ],
@@ -132,42 +132,33 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
     return RefreshIndicator(
         child: ListView.builder(
             controller: _scrollController,
-            itemCount: data!.length+1,
+            itemCount: data!.length + 1,
             itemBuilder: (BuildContext context, int index) {
-
-
-              if(index == data!.length){
-
-                 if(hasMore){
-
-                  return const  Center(
-
-                 child: Text("加载更多"),
-
-                );
-
-                  }else{
-               return const Center(
-                 child:Column(
-
-                  children: [
-
-                    
-                    Divider(height: 1,color: Color.fromRGBO(0, 0, 0, 0.1),),
-                    SizedBox(height: 20,),
-                     Text("数据加载完成"),
-                     SizedBox(
-                      height: 20,
-                     )
-                  ],
-                 ),
-
-                );
-                    
-                  }
-                
+              if (index == data!.length) {
+                if (hasMore) {
+                  return const Center(
+                    child: Text("加载更多"),
+                  );
+                } else {
+                  return const Center(
+                    child: Column(
+                      children: [
+                        Divider(
+                          height: 1,
+                          color: Color.fromRGBO(0, 0, 0, 0.1),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text("数据加载完成"),
+                        SizedBox(
+                          height: 20,
+                        )
+                      ],
+                    ),
+                  );
+                }
               }
-
 
               Datum model = data![index];
 
@@ -249,20 +240,25 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
                 sortType = "all";
                 initData();
               },
-              child:  Text(
+              child: Text(
                 "综合",
-                style: TextStyle(fontSize: 18, color: (sortType == "all")? Colors.black : Colors.grey),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: (sortType == "all") ? Colors.black : Colors.grey),
               )),
           const Spacer(),
           TextButton(
               onPressed: () {
-
                 index = 1;
                 sortType = "sales";
                 initData();
               },
-              child:  Text("销量",
-                  style: TextStyle(fontSize: 18, color: (sortType == "sales")? Colors.black : Colors.grey),)),
+              child: Text(
+                "销量",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: (sortType == "sales") ? Colors.black : Colors.grey),
+              )),
           const Spacer(),
           TextButton(
               onPressed: () {
@@ -270,8 +266,11 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
                 sortType = "price";
                 initData();
               },
-              child:  Text("价格",
-                  style: TextStyle(fontSize: 18, color:(sortType == "price")? Colors.black : Colors.grey))),
+              child: Text("价格",
+                  style: TextStyle(
+                      fontSize: 18,
+                      color:
+                          (sortType == "price") ? Colors.black : Colors.grey))),
           const Spacer(),
         ],
       ),

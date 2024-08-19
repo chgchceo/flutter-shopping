@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
+import 'package:fluttershopping/apis/author_get_request.dart';
+import 'package:fluttershopping/utils/loading.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -274,19 +277,22 @@ class _LoginPageState extends State<LoginPage> {
       ToastHelper.showToast("请输入短信验证码");
       return;
     }
-    loginSuccessAc();
-    return;
 
-    // BasePostRequest request = BasePostRequest();
+    // loginSuccessAc();
+    // return;
+
+    // AuthorGetRequest request = AuthorGetRequest();
     // Map<String, Object> form = {
-    //   "smsCode": "246810",
-    //   "mobile": "18917286702",
-    //   "isParty": false,
-    //   "partyData": {}
+    //   "form": {
+    //     "smsCode": "246810",
+    //     "mobile": "18917286702",
+    //     "isParty": false,
+    //     "partyData": {}
+    //   }
     // };
-
-    // request.add("s", "/api/passport/login");
-    // request.add("form", jsonEncode(form));
+    // request.params = form;
+    // // request.add("s", "/api/passport/login");
+    // // request.add("form", jsonEncode(form));
 
     // print(form);
     // var res = await HiNet.getInstance().send(request);
@@ -298,6 +304,49 @@ class _LoginPageState extends State<LoginPage> {
     //   SPUtil.save("token", model.data?.token);
     //   SPUtil.save("userId", model.data?.userId);
     // }
+
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.show(context);
+      // showLoadingDialog(context,"加载中");
+    });
+    Map<String, dynamic> form = {
+      "form": {
+        "smsCode": "246810",
+        "mobile": phone,
+        "isParty": false,
+        "partyData": {}
+      }
+    };
+
+    String jsonBody = jsonEncode(form);
+
+    Dio dio = Dio();
+    dio.options.headers['Content-Type'] = 'application/json';
+    dio.options.headers['platform'] = 'H5'; // 或者其他客户端类型，如'APP', 'MiniProgram'等
+
+    Response<String> response = await dio.post(
+      'http://smart-shop.itheima.net/index.php?s=/api/passport/login',
+      data: jsonBody,
+    );
+
+    BaseModel model1 = BaseModel.fromJson(jsonDecode(response.toString()));
+    ToastHelper.showToast(model1.message);
+
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.dismiss(context);
+    });
+    if (model1.status == 200) {
+      LoginModel model = LoginModel.fromJson(jsonDecode(response.toString()));
+      SPUtil.save("token", model.data?.token);
+      SPUtil.save("userId", model.data?.userId);
+      print(model.data?.token);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop("refresh");
+    } else {
+      ToastHelper.showToast(model1.message);
+    }
   }
 
   void loginSuccessAc() async {
@@ -313,7 +362,7 @@ class _LoginPageState extends State<LoginPage> {
     request.body = json.encode({
       "form": {
         "smsCode": "246810",
-        "mobile": "18917286702",
+        "mobile": phone,
         "isParty": false,
         "partyData": {}
       }
@@ -321,11 +370,14 @@ class _LoginPageState extends State<LoginPage> {
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
+    print("================object");
+    print(response.toString());
 
     BaseModel model1 = BaseModel.fromJson(jsonDecode(response.toString()));
     ToastHelper.showToast(model1.message);
     if (model1.status == 200) {
       LoginModel model = LoginModel.fromJson(jsonDecode(response.toString()));
+      print(model.data?.token);
       SPUtil.save("token", model.data?.token);
       SPUtil.save("userId", model.data?.userId);
       // ignore: use_build_context_synchronously

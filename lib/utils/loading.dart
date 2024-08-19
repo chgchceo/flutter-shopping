@@ -5,25 +5,25 @@ class Loading extends StatelessWidget {
   const Loading({super.key});
 
   static void show(BuildContext context) {
+    // 这里是你想要延时执行的代码
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (ctx) => Theme(
+        data: Theme.of(ctx).copyWith(dialogBackgroundColor: Colors.transparent),
+        child: const Loading(),
+      ),
+    );
 
-      // 这里是你想要延时执行的代码
-      showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (ctx) => Theme(
-          data:
-              Theme.of(ctx).copyWith(dialogBackgroundColor: Colors.transparent),
-          child: const Loading(),
-        ),
-      );
-    
+    // Future.delayed(const Duration(seconds: 10), () {
+    //   // 这里是你想要延时执行的代码
+    //   Loading.dismiss(context);
+    // });
   }
 
   static void dismiss(context) {
-
-      // 这里是你想要延时执行的代码
-        Navigator.pop(context);
-
+    // 这里是你想要延时执行的代码
+    Navigator.pop(context);
   }
 
   @override
@@ -39,15 +39,23 @@ class Loading extends StatelessWidget {
           width: 120,
           height: 120,
           alignment: Alignment.center,
-          child:const Column(
+          child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SpinKitFadingCircle(
                 color: Colors.black,
                 size: 46.0,
               ),
-              SizedBox(height: 15,),
-              Text("正在加载",style: TextStyle(fontSize: 19,color: Colors.black,decoration: TextDecoration.none),)
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "正在加载",
+                style: TextStyle(
+                    fontSize: 19,
+                    color: Colors.black,
+                    decoration: TextDecoration.none),
+              )
             ],
           ),
         ),

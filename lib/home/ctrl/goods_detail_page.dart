@@ -1,12 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:fluttershopping/apis/author_get_request.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
+import 'package:fluttershopping/apis/base_post_request.dart';
 import 'package:fluttershopping/home/model/comment_list.dart';
 import 'package:fluttershopping/home/model/goods_detail.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
+import 'package:fluttershopping/mine/model/base_model.dart';
+import 'package:fluttershopping/utils/http_service.dart';
 import 'package:fluttershopping/utils/loading.dart';
+import 'package:fluttershopping/utils/sp_utils.dart';
+import 'package:fluttershopping/utils/toast_helper.dart';
 
 class GoodsDetailPage extends StatefulWidget {
   final String? goodsId;
@@ -34,8 +41,6 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-
-
     print(MediaQuery.of(context).padding.top);
     print(MediaQuery.of(context).padding.bottom);
 
@@ -69,7 +74,11 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
         children: [
           SizedBox(
             // height: MediaQuery.of(context).size.height - 80 - 120,
-            height: MediaQuery.of(context).size.height - kToolbarHeight -60 - MediaQuery.of(context).padding.top-MediaQuery.of(context).padding.bottom,
+            height: MediaQuery.of(context).size.height -
+                kToolbarHeight -
+                60 -
+                MediaQuery.of(context).padding.top -
+                MediaQuery.of(context).padding.bottom,
             child: ListView(children: [
               BannerView(),
               const SizedBox(height: 15),
@@ -113,10 +122,17 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Image.network(
-                        m.user.avatarUrl,
-                        width: 30,
-                      ),
+                      m.user.avatarUrl.toString().length > 5
+                          ? Image.network(
+                              m.user.avatarUrl ?? "12",
+                              width: 30,
+                              height: 30,
+                            )
+                          : Image.asset(
+                              "./././images/default.jpeg",
+                              width: 30,
+                              height: 30,
+                            ), //const Text(""),
                       Text(m.user.nickName),
                     ],
                   ),
@@ -265,15 +281,21 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
           const SizedBox(
             width: 20,
           ),
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.shopping_cart,
-                color: Colors.grey,
-              ),
-              Text("购物车")
-            ],
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context)
+                  .popUntil((Route<dynamic> route) => route.isFirst);
+            },
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.shopping_cart,
+                  color: Colors.grey,
+                ),
+                Text("购物车")
+              ],
+            ),
           ),
           const Spacer(),
           const SizedBox(
@@ -380,7 +402,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                           )
                         ],
                       ),
-                      Text("库存${detail!.goodsSales}"),
+                      Text("库存${detail!.stockTotal.toString()}"),
                       const SizedBox(
                         height: 40,
                       )
@@ -454,7 +476,9 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                 height: 30,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  joinCart();
+                },
                 style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(Colors.orange),
                     foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -573,13 +597,40 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
     request.add("limit", "3");
 
     var res = await HiNet.getInstance().send(request);
-    CommentListModel model =
-        CommentListModel.fromJson(jsonDecode(res.toString()));
+    BaseModel model = BaseModel.fromJson(jsonDecode(res.toString()));
     print(res);
     if (model.status == 200) {
+      CommentListModel model =
+          CommentListModel.fromJson(jsonDecode(res.toString()));
       setState(() {
         list = model.data.list;
       });
     }
+  }
+
+  //加入购物车
+  void joinCart() async {
+    var params = {
+      "goodsId": detail!.goodsId.toString(),
+      "goodsNum": "1",
+      "goodsSkuId": detail!.skuList[0].goodsSkuId.toString()
+    };
+
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.show(context);
+      // showLoadingDialog(context, "加载中");
+    });
+
+    var res = await HttpService.post("cart/add", params);
+    print(res);
+    BaseModel model = BaseModel.fromJson(jsonDecode(res.toString()));
+    ToastHelper.showToast(model.message);
+    Navigator.pop(context);
+    Future.delayed(const Duration(seconds: 0), () {
+      // 这里是你想要延时执行的代码
+      Loading.dismiss(context);
+      // hideLoadingDialog(context);
+    });
   }
 }

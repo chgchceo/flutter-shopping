@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-CommentListModel commentListModelFromJson(String str) => CommentListModel.fromJson(json.decode(str));
+CommentListModel commentListModelFromJson(String str) =>
+    CommentListModel.fromJson(json.decode(str));
 
-String commentListModelToJson(CommentListModel data) => json.encode(data.toJson());
+String commentListModelToJson(CommentListModel data) =>
+    json.encode(data.toJson());
 
 class CommentListModel {
   int status;
@@ -19,7 +21,8 @@ class CommentListModel {
     required this.data,
   });
 
-  factory CommentListModel.fromJson(Map<String, dynamic> json) => CommentListModel(
+  factory CommentListModel.fromJson(Map<String, dynamic> json) =>
+      CommentListModel(
         status: json["status"],
         message: json["message"],
         data: Data.fromJson(json["data"]),
@@ -101,8 +104,8 @@ class User {
   int userId;
   String nickName;
   int avatarId;
-  String avatarUrl;
-  Avatar avatar;
+  dynamic avatarUrl;
+  dynamic avatar;
 
   User({
     required this.userId,
@@ -117,7 +120,7 @@ class User {
         nickName: json["nick_name"],
         avatarId: json["avatar_id"],
         avatarUrl: json["avatar_url"],
-        avatar: Avatar.fromJson(json["avatar"]),
+        avatar: json["avatar"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -125,86 +128,6 @@ class User {
         "nick_name": nickName,
         "avatar_id": avatarId,
         "avatar_url": avatarUrl,
-        "avatar": avatar.toJson(),
-      };
-}
-
-class Avatar {
-  int fileId;
-  int groupId;
-  int channel;
-  String storage;
-  String domain;
-  int fileType;
-  String fileName;
-  String filePath;
-  int fileSize;
-  String fileExt;
-  String cover;
-  int uploaderId;
-  int isRecycle;
-  int isDelete;
-  DateTime updateTime;
-  String previewUrl;
-  String externalUrl;
-
-  Avatar({
-    required this.fileId,
-    required this.groupId,
-    required this.channel,
-    required this.storage,
-    required this.domain,
-    required this.fileType,
-    required this.fileName,
-    required this.filePath,
-    required this.fileSize,
-    required this.fileExt,
-    required this.cover,
-    required this.uploaderId,
-    required this.isRecycle,
-    required this.isDelete,
-    required this.updateTime,
-    required this.previewUrl,
-    required this.externalUrl,
-  });
-
-  factory Avatar.fromJson(Map<String, dynamic> json) => Avatar(
-        fileId: json["file_id"],
-        groupId: json["group_id"],
-        channel: json["channel"],
-        storage: json["storage"],
-        domain: json["domain"],
-        fileType: json["file_type"],
-        fileName: json["file_name"],
-        filePath: json["file_path"],
-        fileSize: json["file_size"],
-        fileExt: json["file_ext"],
-        cover: json["cover"],
-        uploaderId: json["uploader_id"],
-        isRecycle: json["is_recycle"],
-        isDelete: json["is_delete"],
-        updateTime: DateTime.parse(json["update_time"]),
-        previewUrl: json["preview_url"],
-        externalUrl: json["external_url"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "file_id": fileId,
-        "group_id": groupId,
-        "channel": channel,
-        "storage": storage,
-        "domain": domain,
-        "file_type": fileType,
-        "file_name": fileName,
-        "file_path": filePath,
-        "file_size": fileSize,
-        "file_ext": fileExt,
-        "cover": cover,
-        "uploader_id": uploaderId,
-        "is_recycle": isRecycle,
-        "is_delete": isDelete,
-        "update_time": updateTime.toIso8601String(),
-        "preview_url": previewUrl,
-        "external_url": externalUrl,
+        "avatar": avatar,
       };
 }

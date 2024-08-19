@@ -4,6 +4,7 @@ import 'package:fluttershopping/category/ctrl/category_page.dart';
 import 'package:fluttershopping/home/ctrl/home_page.dart';
 import 'package:fluttershopping/mine/ctrl/mine_page.dart';
 import 'package:fluttershopping/utils/sp_utils.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +15,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      // Use builder only if you need to use library outside ScreenUtilInit context
+      builder: (_, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'First Method',
+          // You can use the library anywhere in the app even in theme
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            // textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+          ),
+          home: child,
+        );
+      },
+      child: const MyHomePage(),
     );
   }
 }
@@ -40,10 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-
     super.initState();
+    initData();
+  }
 
-    SPUtil.init();
+  initData() async {
+    await SPUtil.init();
   }
 
   @override

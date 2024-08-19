@@ -7,6 +7,7 @@ import 'package:fluttershopping/home/ctrl/search_goods.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -22,19 +23,17 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   void initState() {
     super.initState();
-
     initData();
   }
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height -
+    var height = ScreenUtil().screenHeight -
         65 -
-        25 -
+        65 -
         kBottomNavigationBarHeight -
         kToolbarHeight -
-        MediaQuery.of(context).padding.bottom -
-        MediaQuery.of(context).padding.top;
+        ScreenUtil().statusBarHeight;
 
     return Scaffold(
         appBar: AppBar(
@@ -43,26 +42,27 @@ class _CategoryPageState extends State<CategoryPage> {
           foregroundColor: Colors.black,
           centerTitle: true,
         ),
-        body: Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                const SearchButton(),
-                const SizedBox(height: 15),
-                Row(children: [
-                  SizedBox(
-                    width: 120,
-                    height: height,
-                    child: leftView(),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 120,
-                    height: height,
-                    child: rightView(),
-                  )
-                ])
-              ],
-            )));
+        body: SafeArea(
+            child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    const SearchButton(),
+                    const SizedBox(height: 15),
+                    Row(children: [
+                      SizedBox(
+                        width: 120,
+                        height: height,
+                        child: leftView(),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 120,
+                        height: height,
+                        child: rightView(),
+                      )
+                    ])
+                  ],
+                ))));
   }
 
   Widget leftView() {

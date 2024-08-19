@@ -14,6 +14,10 @@ class DioAdapter extends HiNetAdapter {
       if (request.httpMethod() == HttpMethod.GET) {
         response = await Dio().get(request.url(), options: options);
       } else if (request.httpMethod() == HttpMethod.POST) {
+        print("object123");
+        print(request.params);
+        print(request.url());
+        print("object123");
         response = await Dio()
             .post(request.url(), data: request.params, options: options);
       } else if (request.httpMethod() == HttpMethod.DELETE) {
@@ -23,8 +27,8 @@ class DioAdapter extends HiNetAdapter {
     } on DioException catch (e) {
       error = e;
       response = e.response;
-    } 
-    
+    }
+
     if (error != null) {
       throw HiNetError(
           code: response.statusCode,
