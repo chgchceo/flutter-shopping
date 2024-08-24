@@ -65,6 +65,7 @@ class ListElement {
   DateTime createTime;
   DateTime updateTime;
   Goods goods;
+  bool isSelected = true;
 
   ListElement({
     required this.id,

@@ -7,6 +7,7 @@ import 'package:fluttershopping/apis/base_post_request.dart';
 import 'package:fluttershopping/home/model/comment_list.dart';
 import 'package:fluttershopping/home/model/goods_detail.dart';
 import 'package:fluttershopping/home/model/home_model.dart';
+import 'package:fluttershopping/home/model/mydata.dart';
 import 'package:fluttershopping/home/view/home_subview.dart';
 import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/mine/model/base_model.dart';
@@ -14,6 +15,7 @@ import 'package:fluttershopping/utils/http_service.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/sp_utils.dart';
 import 'package:fluttershopping/utils/toast_helper.dart';
+import 'package:provider/provider.dart';
 
 class GoodsDetailPage extends StatefulWidget {
   final String? goodsId;
@@ -29,7 +31,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   List<ListElement>? list; //评论数据
 
-  var num = 1;
+  // var num = 1;
 
   @override
   void initState() {
@@ -50,6 +52,15 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
           centerTitle: true,
         ),
         body: mainView());
+
+    // return ChangeNotifierProvider(
+    //     create: (context) => MyData(), // 创建数据模型实例
+    //     child: Scaffold(
+    //         appBar: AppBar(
+    //           title: const Text("商品详情"),
+    //           centerTitle: true,
+    //         ),
+    //         body: mainView()));
   }
 
   // ignore: non_constant_identifier_names
@@ -332,6 +343,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
   }
 
   void _showModalBottomSheet(String title) {
+    context.read<MyData>().setCount(1);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -425,11 +437,12 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
-                      if (num > 1) {
-                        setState(() {
-                          num -= 1;
-                        });
-                      }
+                      context.read<MyData>().reduce();
+                      // if (num > 1) {
+                      //   setState(() {
+                      //     num -= 1;
+                      //   });
+                      // }
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -449,7 +462,8 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                     width: 40,
                     height: 30,
                     color: Colors.grey.withOpacity(0.5),
-                    child: Text(num.toString()),
+                    // child: Text(num.toString()),
+                    child: Text('${context.watch<MyData>().count}'),
                   ),
                   const SizedBox(
                     width: 15,
@@ -457,7 +471,8 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        num++;
+                        // num++;
+                        context.read<MyData>().increment();
                       });
                     },
                     child: Container(
@@ -610,9 +625,14 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
 
   //加入购物车
   void joinCart() async {
+    final myData = Provider.of<MyData>(context, listen: false);
+
+    print("object234");
+    var num = myData.count.toString();
+    print(num);
     var params = {
       "goodsId": detail!.goodsId.toString(),
-      "goodsNum": "1",
+      "goodsNum": num,
       "goodsSkuId": detail!.skuList[0].goodsSkuId.toString()
     };
 

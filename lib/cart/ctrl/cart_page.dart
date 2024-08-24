@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttershopping/cart/model/crat_list.dart';
+import 'package:fluttershopping/home/ctrl/goods_detail_page.dart';
+import 'package:fluttershopping/home/model/mydata.dart';
 import 'package:fluttershopping/mine/model/base_model.dart';
 import 'package:fluttershopping/utils/http_service.dart';
+import 'package:fluttershopping/utils/my_icons.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -119,7 +123,17 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
+  changeCheckStatus() {
+    final myData = Provider.of<MyData>(context, listen: false);
+    bool isAll = myData.isAll;
+    context.read<MyData>().changeIsAll(!isAll);
+    setState(() {
+      list.map((m) => m.isSelected = !isAll).toList();
+    });
+  }
+
   Widget bottomView() {
+    bool isAll = context.watch<MyData>().isAll;
     return Container(
       color: Colors.white,
       height: 65,
@@ -129,9 +143,21 @@ class _CartPageState extends State<CartPage> {
             width: 15,
           ),
           TextButton(
-              onPressed: () {},
-              child: const Row(
-                children: [Icon(Icons.tab_unselected), Text("全选")],
+              onPressed: () {
+                changeCheckStatus();
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    isAll ? MyIcons.sel : MyIcons.unsel,
+                    color: isAll ? Colors.blue : Colors.grey,
+                    size: 25,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Text("全选")
+                ],
               )),
           const Spacer(),
           const Text("合计:"),
@@ -196,7 +222,18 @@ class _CartPageState extends State<CartPage> {
       // height: 130,
       child: Row(
         children: [
-          const Icon(Icons.select_all),
+          // const Icon(Icons.select_all),
+          GestureDetector(
+            onTap: () {
+              element.isSelected = !element.isSelected;
+              setState(() {});
+            },
+            child: Icon(
+              element.isSelected ? MyIcons.sel : MyIcons.unsel,
+              color: element.isSelected ? Colors.blue : Colors.grey,
+              size: 25,
+            ),
+          ),
           const SizedBox(
             width: 15,
           ),

@@ -9,6 +9,7 @@ import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/http/request/test_request.dart';
 import 'package:fluttershopping/utils/loading.dart';
 import 'package:fluttershopping/utils/navigator_utils.dart';
+import 'package:fluttershopping/utils/sp_utils.dart';
 
 // ignore: prefer_typing_uninitialized_variables
 var screenWidth;
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage>
 
 //加载首页数据
   void initData() async {
+    await SPUtil.init();
     Future.delayed(const Duration(seconds: 0), () {
       // 这里是你想要延时执行的代码
       Loading.show(context);
