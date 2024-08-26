@@ -59,8 +59,10 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
               const SizedBox(height: 25),
               SizedBox(
                 height: MediaQuery.of(context).size.height -
-                    kBottomNavigationBarHeight -
-                    220,
+                    kToolbarHeight -
+                    220 -
+                    150 -
+                    kBottomNavigationBarHeight,
                 child: Container(
                   // color: Colors.red,
                   child: bottomView(),
@@ -89,7 +91,7 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
 
   Widget bottomView() {
     return GridView.builder(
-        itemCount: data.length ?? 0,
+        itemCount: data.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           childAspectRatio: 2,
@@ -117,25 +119,28 @@ class _SearchHistoryPageState extends State<SearchHistoryPage> {
   }
 
   Widget midView() {
-    return Row(
-      children: [
-        const SizedBox(width: 20),
-        const Text(
-          "最近搜索",
-          style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-        ),
-        const Spacer(),
-        GestureDetector(
-          child: const Icon(Icons.clear),
-          onTap: () {
-            SPUtil.save("searchList", []);
-            setState(() {
-              data = [];
-            });
-          },
-        ),
-        const SizedBox(width: 20),
-      ],
+    return SizedBox(
+      height: 50,
+      child: Row(
+        children: [
+          const SizedBox(width: 20),
+          const Text(
+            "最近搜索",
+            style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          GestureDetector(
+            child: const Icon(Icons.clear),
+            onTap: () {
+              SPUtil.save("searchList", []);
+              setState(() {
+                data = [];
+              });
+            },
+          ),
+          const SizedBox(width: 20),
+        ],
+      ),
     );
   }
 

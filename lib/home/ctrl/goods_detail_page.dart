@@ -13,6 +13,7 @@ import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/mine/model/base_model.dart';
 import 'package:fluttershopping/utils/http_service.dart';
 import 'package:fluttershopping/utils/loading.dart';
+import 'package:fluttershopping/utils/main_state.dart';
 import 'package:fluttershopping/utils/sp_utils.dart';
 import 'package:fluttershopping/utils/toast_helper.dart';
 import 'package:provider/provider.dart';
@@ -283,6 +284,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
               //返回最外层
               Navigator.of(context)
                   .popUntil((Route<dynamic> route) => route.isFirst);
+              context.read<MainState>().changeCurrentIndex(0);
             },
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -296,6 +298,7 @@ class _GoodsDetailPageState extends State<GoodsDetailPage> {
             onTap: () {
               Navigator.of(context)
                   .popUntil((Route<dynamic> route) => route.isFirst);
+              context.read<MainState>().changeCurrentIndex(2);
             },
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,

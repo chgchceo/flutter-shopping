@@ -2,12 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttershopping/apis/base_post_request.dart';
 import 'package:fluttershopping/cart/model/crat_list.dart';
 import 'package:fluttershopping/home/ctrl/goods_detail_page.dart';
 import 'package:fluttershopping/home/model/mydata.dart';
+import 'package:fluttershopping/http/core/hi_net.dart';
 import 'package:fluttershopping/mine/model/base_model.dart';
 import 'package:fluttershopping/utils/http_service.dart';
+import 'package:fluttershopping/utils/main_state.dart';
 import 'package:fluttershopping/utils/my_icons.dart';
+import 'package:fluttershopping/utils/navigator_utils.dart';
+import 'package:fluttershopping/utils/sp_utils.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
@@ -20,6 +26,9 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   late int cartTotal = 0;
   late List<ListElement> list = [];
+  var selList = 0; //选中的商品数量
+  var selCount = 0.0; //选中的商品的总价
+  late bool isEdit = false; //是否是编辑删除状态，默认是否
   @override
   void initState() {
     super.initState();
@@ -29,6 +38,7 @@ class _CartPageState extends State<CartPage> {
 
 //加载页面数据
   initData() async {
+    await SPUtil.init();
     var res = await HttpService.get("/cart/list", context);
     BaseModel model = BaseModel.fromJson(jsonDecode(res.toString()));
     if (model.status == 200) {
@@ -36,7 +46,22 @@ class _CartPageState extends State<CartPage> {
       setState(() {
         cartTotal = model.data.cartTotal;
         list = model.data.list;
+        updateCount();
       });
+    }
+  }
+
+  updateCount() {
+    selCount = 0;
+    selList = 0;
+    for (var element in list) {
+      if (element.isSelected) {
+        selList++;
+        print("1233");
+        selCount +=
+            element.goodsNum * double.parse(element.goods.goodsPriceMin);
+        print(selCount);
+      }
     }
   }
 
@@ -87,13 +112,30 @@ class _CartPageState extends State<CartPage> {
           const Text("件商品", style: TextStyle(fontSize: 18)),
           const Spacer(),
           TextButton(
-              onPressed: () {},
-              child: const Row(
+              onPressed: () {
+                setState(() {
+                  isEdit = !isEdit;
+                  if (isEdit) {
+                    //取消全选状态
+                    context.read<MyData>().changeIsAll(false);
+                    list.map((m) => m.isSelected = false).toList();
+                    updateCount();
+                  } else {
+                    //全选
+                    context.read<MyData>().changeIsAll(true);
+                    list.map((m) => m.isSelected = true).toList();
+                    updateCount();
+                  }
+                });
+              },
+              child: Row(
                 children: [
-                  Icon(Icons.edit),
+                  isEdit ? const Text("") : const Icon(Icons.edit),
                   Text(
-                    "编辑",
-                    style: TextStyle(fontSize: 18),
+                    isEdit ? "完成" : "编辑",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: isEdit ? Colors.red : Colors.black),
                   )
                 ],
               )),
@@ -117,7 +159,18 @@ class _CartPageState extends State<CartPage> {
       child: ListView.builder(
           itemCount: list.length,
           itemBuilder: (BuildContext context, int index) {
-            return itemView(list[index]);
+            return GestureDetector(
+              onTap: () {
+                ListElement element = list[index];
+                NavigatorUtils.pushPage(
+                    context: context,
+                    targetPage: GoodsDetailPage(
+                      goodsId: element.goodsId.toString(),
+                    ),
+                    dismissCallBack: (v) {});
+              },
+              child: itemView(list[index]),
+            );
           }),
       // color: Colors.red,
     );
@@ -129,6 +182,7 @@ class _CartPageState extends State<CartPage> {
     context.read<MyData>().changeIsAll(!isAll);
     setState(() {
       list.map((m) => m.isSelected = !isAll).toList();
+      updateCount();
     });
   }
 
@@ -161,11 +215,33 @@ class _CartPageState extends State<CartPage> {
               )),
           const Spacer(),
           const Text("合计:"),
-          const Text("23.00"),
+          Text(
+            "$selCount",
+            style: const TextStyle(color: Colors.red, fontSize: 20),
+          ),
           const SizedBox(
             width: 15,
           ),
-          ElevatedButton(onPressed: () {}, child: const Text("去结算")),
+          ElevatedButton(
+            onPressed: () {
+              if (isEdit) {
+                //购物车删除商品
+                delGoods();
+              } else {
+                //去支付
+              }
+            },
+            style: const ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.red),
+                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                minimumSize: WidgetStatePropertyAll(Size(110, 40))),
+            child: isEdit
+                ? const Text(
+                    "删除",
+                    style: TextStyle(fontSize: 18),
+                  )
+                : Text("去结算($selList)", style: const TextStyle(fontSize: 16)),
+          ),
           const SizedBox(
             width: 15,
           )
@@ -173,6 +249,24 @@ class _CartPageState extends State<CartPage> {
       ),
     );
   }
+
+  //购物车删除商品
+  delGoods() async {
+    var ids = [];
+    for (var element in list) {
+      if (element.isSelected) {
+        ids.add(element.id);
+      }
+    }
+    // Map<String, dynamic> data = {"cartIds", ids} as Map<String, dynamic>;
+    var res = await HttpService.post("/cart/clear", {"cartIds", ids}, context);
+
+    print(res);
+    //刷新数据
+    initData();
+  }
+
+  goPay() {}
 
 //没有数据
   Widget mainViewHasNullList() {
@@ -198,7 +292,9 @@ class _CartPageState extends State<CartPage> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              context.read<MainState>().changeCurrentIndex(0);
+            },
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.red),
               foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -226,6 +322,17 @@ class _CartPageState extends State<CartPage> {
           GestureDetector(
             onTap: () {
               element.isSelected = !element.isSelected;
+
+              //更新是否全选按钮状态
+              List arr =
+                  list.where((element) => element.isSelected == false).toList();
+
+              if (arr.isEmpty) {
+                context.read<MyData>().changeIsAll(true);
+              } else {
+                context.read<MyData>().changeIsAll(false);
+              }
+              updateCount();
               setState(() {});
             },
             child: Icon(
@@ -253,7 +360,11 @@ class _CartPageState extends State<CartPage> {
             children: [
               SizedBox(
                 width: ScreenUtil().screenWidth - 220,
-                child: Text(element.goods.goodsName),
+                child: Text(
+                  element.goods.goodsName,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               Row(
                 children: [
@@ -266,11 +377,11 @@ class _CartPageState extends State<CartPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // if (num > 1) {
-                      //   setState(() {
-                      //     num -= 1;
-                      //   });
-                      // }
+                      if (element.goodsNum > 1) {
+                        element.goodsNum--;
+                        updateCount();
+                        setState(() {});
+                      }
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -297,9 +408,9 @@ class _CartPageState extends State<CartPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // setState(() {
-                      //   num++;
-                      // });
+                      element.goodsNum++;
+                      updateCount();
+                      setState(() {});
                     },
                     child: Container(
                       alignment: Alignment.center,

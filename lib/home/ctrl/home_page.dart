@@ -43,11 +43,11 @@ class _HomePageState extends State<HomePage>
 //加载首页数据
   void initData() async {
     await SPUtil.init();
-    Future.delayed(const Duration(seconds: 0), () {
-      // 这里是你想要延时执行的代码
-      Loading.show(context);
-      // showLoadingDialog(context,"加载中");
-    });
+    // Future.delayed(const Duration(seconds: 0), () {
+    //   // 这里是你想要延时执行的代码
+    //   Loading.show(context);
+    //   // showLoadingDialog(context,"加载中");
+    // });
 
     TestRequest request = TestRequest();
     request.add("s", "api/page/detail");
@@ -57,10 +57,10 @@ class _HomePageState extends State<HomePage>
     if (model.status == 200) {
       setState(() {
         items = model.data.pageData.items;
-        Future.delayed(const Duration(seconds: 0), () {
-          // 这里是你想要延时执行的代码
-          Loading.dismiss(context);
-        });
+        // Future.delayed(const Duration(seconds: 0), () {
+        //   // 这里是你想要延时执行的代码
+        //   Loading.dismiss(context);
+        // });
 
         bannerData = items[1].data;
         cateData = items[3].data;

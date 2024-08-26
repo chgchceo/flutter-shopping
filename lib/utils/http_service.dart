@@ -32,6 +32,7 @@ class HttpService {
 
       Future.delayed(const Duration(seconds: 0), () {
         // 这里是你想要延时执行的代码
+        // ignore: use_build_context_synchronously
         Loading.dismiss(context);
         // hideLoadingDialog(context);
       });
@@ -40,23 +41,27 @@ class HttpService {
     } catch (error) {
       Future.delayed(const Duration(seconds: 0), () {
         // 这里是你想要延时执行的代码
+        // ignore: use_build_context_synchronously
         Loading.dismiss(context);
         // hideLoadingDialog(context);
       });
       // 错误处理
-      throw error;
+      rethrow;
     }
   }
 
   // 封装POST请求
   static Future<Response> post(
-      String path, Map<String, dynamic> data, BuildContext context) async {
+      String path, Object? data, BuildContext context) async {
     print(data);
     try {
       var toke = await SPUtil.getString("token");
       print(toke.toString());
-      var options =
-          Options(headers: {"Access-Token": toke.toString(), "platform": "H5"});
+      var options = Options(headers: {
+        "Access-Token": toke.toString(),
+        "platform": "H5",
+        // "Content-Type": "application/json"
+      });
       Future.delayed(const Duration(seconds: 0), () {
         // 这里是你想要延时执行的代码
         Loading.show(context);

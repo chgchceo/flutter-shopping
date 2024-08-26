@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttershopping/utils/toast_helper.dart';
 
 class MyData with ChangeNotifier {
+  //加入购物车数量
   int _count = 1;
 
   int get count => _count;
 
+//购物车页面是否全选
   bool _isAll = true;
 
   bool get isAll => _isAll;

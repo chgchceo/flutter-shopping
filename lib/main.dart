@@ -4,6 +4,7 @@ import 'package:fluttershopping/category/ctrl/category_page.dart';
 import 'package:fluttershopping/home/ctrl/home_page.dart';
 import 'package:fluttershopping/home/model/mydata.dart';
 import 'package:fluttershopping/mine/ctrl/mine_page.dart';
+import 'package:fluttershopping/utils/main_state.dart';
 import 'package:fluttershopping/utils/sp_utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +55,9 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(
             create: (_) => MyData(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => MainState(),
           ),
         ],
         // child: MaterialApp(
@@ -109,8 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
     const MinePage()
   ];
 
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -123,12 +125,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int currentIndex = context.watch<MainState>().currentIndex;
     return Scaffold(
-      body: pageList[_currentIndex],
-      // body: IndexedStack(
-      //   index: _currentIndex,
-      //   children: pageList,
-      // ),
+      // body: pageList[currentIndex],
+      body: IndexedStack(
+        index: currentIndex,
+        children: pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"),
@@ -137,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.shopping_cart), label: "购物车"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "我的"),
         ],
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
@@ -147,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedFontSize: 17,
         onTap: (index) => {
           setState(() {
-            _currentIndex = index;
+            context.read<MainState>().changeCurrentIndex(index);
           })
         },
       ),

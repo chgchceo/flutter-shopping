@@ -129,15 +129,16 @@ class MinePageState extends State<MinePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(ScreenUtil().screenWidth);
-    print(ScreenUtil().bottomBarHeight);
-    print(ScreenUtil().statusBarHeight);
-    print(kToolbarHeight);
-    print(MediaQuery.of(context).padding.top);
-    print(ScreenUtil().screenHeight);
+    // print(ScreenUtil().screenWidth);
+    // print(ScreenUtil().bottomBarHeight);
+    // print(ScreenUtil().statusBarHeight);
+    // print(kToolbarHeight);
+    // print(MediaQuery.of(context).padding.top);
+    // print(ScreenUtil().screenHeight);
 
     return Scaffold(
         backgroundColor: Colors.grey.withOpacity(0.1),
+        // backgroundColor: Colors.red,
         body: RefreshIndicator(
             onRefresh: () async {
               // // 模拟网络请求

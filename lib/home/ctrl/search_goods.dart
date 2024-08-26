@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttershopping/apis/base_get_request.dart';
 import 'package:fluttershopping/home/ctrl/goods_detail_page.dart';
 import 'package:fluttershopping/home/model/search_list.dart';
@@ -111,8 +112,9 @@ class _SearchGoodsPageState extends State<SearchGoodsPage> {
               height: 10,
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height -
+              height: ScreenUtil().screenHeight -
                   kToolbarHeight -
+                  ScreenUtil().bottomBarHeight -
                   140 -
                   MediaQuery.of(context).padding.top,
               child: goodsList(),
